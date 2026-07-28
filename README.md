@@ -39,7 +39,7 @@ python -m pip install -r requirements-dev.txt
 python -B -m pytest
 ```
 
-The validated local snapshot passes 29 tests.
+The validated public snapshot passes 30 tests.
 
 ## Data boundary
 
@@ -47,6 +47,10 @@ This repository does **not** redistribute TOC-Bench videos, extracted frames,
 source answer files, or evaluator-only gold. Those artifacts remain subject to
 their original dataset terms. Public Phase 0 artifacts contain only schemas,
 code, aggregate decisions, and answer-blind feasibility evidence.
+
+Files under `examples/tstep_v0/` are fully synthetic test fixtures. Their
+invented answer fields exercise mapping and executor behavior and are not
+copied from any benchmark.
 
 ## Status
 

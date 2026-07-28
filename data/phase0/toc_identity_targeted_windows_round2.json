@@ -1,0 +1,19 @@
+{
+  "schema_version": "tstep-targeted-window-spec-v0.1",
+  "gold_accessed": false,
+  "purpose": "Resolve identity-transition feasibility for the final Phase 0 acceptance gate.",
+  "rows": [
+    {
+      "video_id": "charades_JFU3J",
+      "windows": [
+        {"label": "identity_reappearance_round2", "start_s": 27.0, "end_s": 33.4, "step_s": 0.1}
+      ]
+    },
+    {
+      "video_id": "charades_GL7E6",
+      "windows": [
+        {"label": "identity_reappearance_round2", "start_s": 8.0, "end_s": 17.0, "step_s": 0.1}
+      ]
+    }
+  ]
+}

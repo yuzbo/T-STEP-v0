@@ -1,0 +1,378 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tstep.local/schemas/deep_annotation_schema.json",
+  "title": "T-STEP-v0 answer-blind deep annotation package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "sample",
+    "entities",
+    "state_intervals",
+    "transition_boundaries",
+    "event_operators",
+    "initial_state_records",
+    "query_spec",
+    "corruption_specs",
+    "annotation_audit"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "tstep-deep-annotation-v0.1"
+    },
+    "sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sample_id",
+        "video_id",
+        "qa_id",
+        "video_duration_ms",
+        "video_timebase",
+        "question_text",
+        "query_type"
+      ],
+      "properties": {
+        "sample_id": {"type": "string", "minLength": 1},
+        "video_id": {"type": "string", "minLength": 1},
+        "qa_id": {"type": "string", "minLength": 1},
+        "video_duration_ms": {"type": "integer", "minimum": 1},
+        "video_timebase": {"const": "pts_ms"},
+        "question_text": {"type": "string"},
+        "query_type": {
+          "enum": [
+            "visibility",
+            "event_order",
+            "conditional_state",
+            "relation_change",
+            "object_identity"
+          ]
+        }
+      }
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "entity_id",
+          "entity_type",
+          "identity_scope",
+          "identity_anchors",
+          "identity_ambiguity"
+        ],
+        "properties": {
+          "entity_id": {"type": "string"},
+          "entity_type": {"type": "string"},
+          "identity_scope": {
+            "enum": ["semantic_label", "tracker_id", "persistent_id"]
+          },
+          "subject_label": {"type": ["string", "null"]},
+          "identity_anchors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["t_ms", "visibility"],
+              "properties": {
+                "t_ms": {"type": "integer", "minimum": 0},
+                "visibility": {
+                  "enum": ["visible", "occluded", "absent", "unknown"]
+                },
+                "bbox_xyxy": {
+                  "type": ["array", "null"],
+                  "prefixItems": [
+                    {"type": "number"},
+                    {"type": "number"},
+                    {"type": "number"},
+                    {"type": "number"}
+                  ],
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "reference": {"type": ["string", "null"]}
+              },
+              "additionalProperties": false
+            }
+          },
+          "identity_ambiguity": {
+            "enum": ["none", "partial", "unresolved"]
+          }
+        }
+      }
+    },
+    "state_intervals": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/state_interval"}
+    },
+    "transition_boundaries": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/transition_boundary"}
+    },
+    "event_operators": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/event_operator"}
+    },
+    "initial_state_records": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/state_record"}
+    },
+    "query_spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "query_id",
+        "query_ast",
+        "target_entity_ids",
+        "expected_answer_type",
+        "proof_requirements",
+        "metric_applicability"
+      ],
+      "properties": {
+        "query_id": {"type": "string"},
+        "query_ast": {"type": "object"},
+        "target_entity_ids": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "expected_answer_type": {"type": "string"},
+        "proof_requirements": {
+          "type": "object",
+          "required": [
+            "required_event_ids",
+            "required_state_record_ids",
+            "identity_dependent"
+          ],
+          "properties": {
+            "required_event_ids": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "required_state_record_ids": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "identity_dependent": {"type": "boolean"}
+          },
+          "additionalProperties": false
+        },
+        "metric_applicability": {
+          "type": "object",
+          "required": [
+            "state_acc",
+            "transition_f1",
+            "ledger_query_accuracy",
+            "transition_drop",
+            "object_id_swap"
+          ],
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "corruption_specs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "corruption_id",
+          "corruption_type",
+          "target_ids",
+          "eligibility_reason",
+          "expected_relation_to_clean",
+          "validator_version"
+        ],
+        "properties": {
+          "corruption_id": {"type": "string"},
+          "corruption_type": {
+            "enum": ["transition_drop", "object_id_swap"]
+          },
+          "target_ids": {
+            "type": "array",
+            "items": {"type": "string"},
+            "minItems": 1
+          },
+          "eligibility_reason": {"type": "string"},
+          "expected_relation_to_clean": {
+            "enum": ["SAME", "DIFFERENT", "UNKNOWN"]
+          },
+          "expected_corrupted_answer": {},
+          "validator_version": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "annotation_audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "annotator_id",
+        "answer_visible",
+        "started_at",
+        "completed_at",
+        "annotation_time_sec",
+        "adjudication_status",
+        "issues"
+      ],
+      "properties": {
+        "annotator_id": {"type": "string"},
+        "answer_visible": {"const": false},
+        "started_at": {"type": ["string", "null"]},
+        "completed_at": {"type": ["string", "null"]},
+        "annotation_time_sec": {"type": ["number", "null"], "minimum": 0},
+        "adjudication_status": {
+          "enum": ["pending", "accepted", "rejected", "needs_revision"]
+        },
+        "issues": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  },
+  "$defs": {
+    "state_interval": {
+      "type": "object",
+      "required": [
+        "interval_id",
+        "entity_ref",
+        "state_key",
+        "typed_value",
+        "start_ms",
+        "end_ms",
+        "observation_status",
+        "source"
+      ],
+      "properties": {
+        "interval_id": {"type": "string"},
+        "entity_ref": {"type": "string"},
+        "state_key": {"type": "string"},
+        "typed_value": {},
+        "start_ms": {"type": "integer", "minimum": 0},
+        "end_ms": {"type": "integer", "minimum": 1},
+        "observation_status": {
+          "enum": ["observed", "uncertain", "unknown"]
+        },
+        "source": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "transition_boundary": {
+      "type": "object",
+      "required": [
+        "boundary_id",
+        "entity_ref",
+        "state_key",
+        "boundary_kind",
+        "lo_ms",
+        "hi_ms",
+        "linked_interval_ids",
+        "source"
+      ],
+      "properties": {
+        "boundary_id": {"type": "string"},
+        "entity_ref": {"type": "string"},
+        "state_key": {"type": "string"},
+        "boundary_kind": {
+          "enum": ["onset", "completion", "change_point"]
+        },
+        "lo_ms": {"type": "integer", "minimum": 0},
+        "hi_ms": {"type": "integer", "minimum": 0},
+        "linked_interval_ids": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "source": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "predicate": {
+      "type": "object",
+      "required": ["entity_ref", "state_key", "typed_value"],
+      "properties": {
+        "entity_ref": {"type": "string"},
+        "state_key": {"type": "string"},
+        "typed_value": {}
+      },
+      "additionalProperties": false
+    },
+    "event_operator": {
+      "type": "object",
+      "required": [
+        "event_id",
+        "operator_type",
+        "participants",
+        "event_span_ms",
+        "apply_boundary_id",
+        "preconditions",
+        "effects",
+        "evidence_refs",
+        "source",
+        "verification_status"
+      ],
+      "properties": {
+        "event_id": {"type": "string"},
+        "operator_type": {"type": "string"},
+        "participants": {
+          "type": "object",
+          "required": ["affected"],
+          "additionalProperties": {"type": "string"}
+        },
+        "event_span_ms": {
+          "type": "array",
+          "prefixItems": [
+            {"type": "integer", "minimum": 0},
+            {"type": "integer", "minimum": 1}
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "apply_boundary_id": {"type": "string"},
+        "preconditions": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/predicate"}
+        },
+        "effects": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/predicate"},
+          "minItems": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "source": {"type": "string"},
+        "verification_status": {
+          "enum": ["verified", "unverified", "metadata_only"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "state_record": {
+      "type": "object",
+      "required": [
+        "record_id",
+        "entity_ref",
+        "state_key",
+        "typed_value",
+        "valid_from_ms",
+        "valid_to_ms",
+        "producer",
+        "record_kind",
+        "source"
+      ],
+      "properties": {
+        "record_id": {"type": "string"},
+        "entity_ref": {"type": "string"},
+        "state_key": {"type": "string"},
+        "typed_value": {},
+        "valid_from_ms": {"type": "integer", "minimum": 0},
+        "valid_to_ms": {"type": ["integer", "null"], "minimum": 1},
+        "producer": {"type": "string"},
+        "record_kind": {
+          "enum": ["initial", "observed", "derived"]
+        },
+        "source": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": "tstep-deep-annotation-v0.1",
+  "sample": {
+    "sample_id": "__FILL__",
+    "video_id": "__FILL__",
+    "qa_id": "__FILL__",
+    "video_duration_ms": 1,
+    "video_timebase": "pts_ms",
+    "question_text": "",
+    "query_type": "visibility"
+  },
+  "entities": [],
+  "state_intervals": [],
+  "transition_boundaries": [],
+  "event_operators": [],
+  "initial_state_records": [],
+  "query_spec": {
+    "query_id": "__FILL__",
+    "query_ast": {},
+    "target_entity_ids": [],
+    "expected_answer_type": "__FILL__",
+    "proof_requirements": {
+      "required_event_ids": [],
+      "required_state_record_ids": [],
+      "identity_dependent": false
+    },
+    "metric_applicability": {
+      "state_acc": false,
+      "transition_f1": false,
+      "ledger_query_accuracy": true,
+      "transition_drop": false,
+      "object_id_swap": false
+    }
+  },
+  "corruption_specs": [],
+  "annotation_audit": {
+    "annotator_id": "__FILL__",
+    "answer_visible": false,
+    "started_at": null,
+    "completed_at": null,
+    "annotation_time_sec": null,
+    "adjudication_status": "pending",
+    "issues": []
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": "tstep-replacement-pool-v0.1",
+  "gold_accessed": false,
+  "reason": "Replace backup/reject rows without lowering annotation-feasibility gates.",
+  "sample_ids": [
+    "TOC-Bench:phase0:charades_GL7E6:5d35b80f555d",
+    "TOC-Bench:phase0:perception_test_video_9057:c3264f9f4b0c",
+    "TOC-Bench:phase0:charades_IZTHW:4daadb0c5ad4",
+    "TOC-Bench:phase0:perception_test_video_7284:816aafd9767f",
+    "TOC-Bench:phase0:perception_test_video_3967:4c7a14e86d78"
+  ]
+}

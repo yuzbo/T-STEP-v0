@@ -1,0 +1,147 @@
+{
+  "schema_version": "tstep-phase0-real-video-gate-v0.1",
+  "updated": "2026-07-28",
+  "gold_accessed_during_screening_or_annotation_feasibility_review": false,
+  "route": "toc_bench_real_video_plus_minimal_manual_ledger_annotation",
+  "method": {
+    "stratified_candidate_count": 30,
+    "unique_video_count": 30,
+    "locally_decoded_count": 30,
+    "coarse_uniform_frames_per_video": 5,
+    "initial_dense_candidate_count": 10,
+    "initial_dense_frames_per_video": 24,
+    "replacement_candidate_count": 5,
+    "replacement_dense_frames_per_video": 24,
+    "targeted_boundary_frame_count_round1": 324,
+    "targeted_identity_frame_count_round2": 156,
+    "total_extracted_frame_evidence_count": 990,
+    "gpu_or_training_started": false
+  },
+  "coarse_screen": {
+    "ledger_critical_status_counts": {
+      "likely": 15,
+      "uncertain": 12,
+      "unsuitable": 3
+    },
+    "deep_annotation_eligibility_counts": {
+      "yes": 14,
+      "unclear": 13,
+      "no": 3
+    }
+  },
+  "acceptance_gate": {
+    "required_accepted": 8,
+    "evaluated_roster_size": 10,
+    "accepted": 7,
+    "backup_or_blocked": 3,
+    "status": "failed_focus_review_triggered"
+  },
+  "final_roster": [
+    {
+      "sample_id": "TOC-Bench:phase0:charades_LCEM0:2ae3a19ca1d1",
+      "dimension": "conditional_state",
+      "decision": "accept",
+      "evidence_brackets_s": [[8.7, 10.0]]
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_1716:93d409ae3676",
+      "dimension": "conditional_state",
+      "decision": "accept",
+      "evidence_brackets_s": [[12.0, 12.8]]
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_MCMTH:a6c394d88031",
+      "dimension": "relative_spatial_change",
+      "decision": "accept",
+      "evidence_brackets_s": [[0.0, 33.8]]
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_X95FK:932fc9216a1a",
+      "dimension": "reappear_or_disappear",
+      "decision": "accept",
+      "evidence_brackets_s": [[27.09, 27.39]]
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_7414:5c92e154093b",
+      "dimension": "reappear_identity",
+      "decision": "accept",
+      "evidence_brackets_s": [[5.7, 7.4], [8.2, 9.0]]
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_GL7E6:5d35b80f555d",
+      "dimension": "reappear_identity",
+      "decision": "backup",
+      "blocker": "The red cup becomes clear around 9.6-10.0 s, but a reliable pre-gap identity anchor is absent amid clutter."
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_GH3D1:26eb74bfda76",
+      "dimension": "event_ordering",
+      "decision": "backup",
+      "blocker": "Two black pans and actor occlusion prevent a stable partial-versus-full hidden boundary."
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_SX07Q:a77b0193c8c5",
+      "dimension": "event_ordering",
+      "decision": "backup",
+      "blocker": "Leaves-frame and disappears-for-good collapse into the same terminal visibility event."
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_6G96Q:0eeb7a9a4848",
+      "dimension": "cross_object_order",
+      "decision": "accept",
+      "evidence_brackets_s": [[19.75, 20.75], [20.25, 21.5]],
+      "caveat": "The operational threshold for partly hidden must be frozen before annotation."
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_3967:4c7a14e86d78",
+      "dimension": "cross_object_order",
+      "decision": "accept",
+      "evidence_brackets_s": [[2.17, 3.23], [5.4, 6.5]]
+    }
+  ],
+  "confirmed_rejection_evidence": [
+    {
+      "sample_id": "TOC-Bench:phase0:charades_JFU3J:e1113ed4bdfd",
+      "reason": "The red cap is visible through 31.10 s, absent from 31.23 s to video end, and never reappears."
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_K7PVL:a2a4df623fbf",
+      "reason": "The window-entry comparator transition is not observable, including the 0.0-2.0 s opening sweep."
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_9057:c3264f9f4b0c",
+      "reason": "Towel identity is confounded by multiple white bathroom objects."
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_IZTHW:4daadb0c5ad4",
+      "reason": "Required terminal picture events are absent and multiple framed pictures are present."
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_7284:816aafd9767f",
+      "reason": "The tomato is already present at frame zero, so its first-show boundary is unobservable."
+    }
+  ],
+  "top_blockers": [
+    {
+      "id": "B1",
+      "name": "event_presupposition_failure",
+      "description": "Some QA prompts presuppose a transition that does not occur or is already true at frame zero."
+    },
+    {
+      "id": "B2",
+      "name": "visibility_operator_overlap",
+      "description": "Partly hidden, fully hidden, leaves frame, and disappears for good are not yet operationally disjoint."
+    },
+    {
+      "id": "B3",
+      "name": "identity_anchor_gap",
+      "description": "A semantic subject label or unique-looking object is insufficient when no pre-gap and post-gap anchors exist."
+    },
+    {
+      "id": "B4",
+      "name": "boundary_sampling_policy",
+      "description": "Interior-only uniform sampling misses opening and terminal events; endpoints plus targeted replay are required."
+    }
+  ],
+  "next_decision": "focused_implementation_review_before_more_annotation_or_any_gpu_run"
+}

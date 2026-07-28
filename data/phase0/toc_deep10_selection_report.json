@@ -1,0 +1,47 @@
+{
+  "schema_version": "tstep-toc-deep10-selection-v0.1",
+  "gold_accessed": false,
+  "coarse_screen_count": 30,
+  "coarse_status_counts": {
+    "likely": 15,
+    "uncertain": 12,
+    "unsuitable": 3
+  },
+  "coarse_eligibility_counts": {
+    "yes": 14,
+    "unclear": 13,
+    "no": 3
+  },
+  "selected_count": 10,
+  "selected_by_dim": {
+    "conditional_state": 2,
+    "relative_spatial_change": 1,
+    "reappear_or_disappear": 1,
+    "reappear_identity": 2,
+    "event_ordering": 2,
+    "cross_object_order": 2
+  },
+  "selection_quotas": {
+    "conditional_state": 2,
+    "relative_spatial_change": 1,
+    "reappear_or_disappear": 1,
+    "reappear_identity": 2,
+    "event_ordering": 2,
+    "cross_object_order": 2
+  },
+  "selected_sample_ids": [
+    "TOC-Bench:phase0:charades_LCEM0:2ae3a19ca1d1",
+    "TOC-Bench:phase0:perception_test_video_1716:93d409ae3676",
+    "TOC-Bench:phase0:charades_MCMTH:a6c394d88031",
+    "TOC-Bench:phase0:charades_X95FK:932fc9216a1a",
+    "TOC-Bench:phase0:charades_JFU3J:e1113ed4bdfd",
+    "TOC-Bench:phase0:perception_test_video_7414:5c92e154093b",
+    "TOC-Bench:phase0:charades_GH3D1:26eb74bfda76",
+    "TOC-Bench:phase0:charades_SX07Q:a77b0193c8c5",
+    "TOC-Bench:phase0:charades_K7PVL:a2a4df623fbf",
+    "TOC-Bench:phase0:charades_6G96Q:0eeb7a9a4848"
+  ],
+  "dense_frame_count_per_video": 24,
+  "dense_review_status": "pending",
+  "warning": "The deep-10 is a stratified shortlist, not an accepted annotation set. Dense answer-blind temporal review remains required."
+}

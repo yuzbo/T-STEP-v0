@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tstep.local/schemas/unified_sample_schema.json",
+  "title": "T-STEP-v0 unified sample",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "sample_id",
+    "dataset",
+    "split",
+    "video",
+    "question",
+    "ledger_query",
+    "objects",
+    "events",
+    "states",
+    "relations",
+    "evidence",
+    "coverage",
+    "audit"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "tstep-ledger-core-v0.1"
+    },
+    "sample_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dataset": {
+      "type": "string",
+      "minLength": 1
+    },
+    "split": {
+      "type": "string",
+      "minLength": 1
+    },
+    "video": {
+      "type": "object",
+      "required": ["video_id", "path_or_uri", "duration_sec", "fps", "frame_count"],
+      "properties": {
+        "video_id": {"type": "string", "minLength": 1},
+        "path_or_uri": {"type": "string"},
+        "duration_sec": {"type": "number", "minimum": 0},
+        "fps": {"type": "number", "minimum": 0},
+        "frame_count": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": true
+    },
+    "question": {
+      "type": "object",
+      "required": [
+        "question_id",
+        "text",
+        "type",
+        "answer_type",
+        "choices",
+        "gt_answer",
+        "gt_answer_normalized"
+      ],
+      "properties": {
+        "question_id": {"type": "string", "minLength": 1},
+        "text": {"type": "string"},
+        "type": {
+          "enum": [
+            "final_state",
+            "intermediate_state",
+            "event_order",
+            "count",
+            "object_identity",
+            "relation_change",
+            "causal_dependency",
+            "counterfactual_state",
+            "evidence_control"
+          ]
+        },
+        "answer_type": {
+          "enum": ["mcq", "short_text", "boolean", "number", "state_tuple"]
+        },
+        "choices": {"type": "array"},
+        "gt_answer": {},
+        "gt_answer_normalized": {}
+      },
+      "additionalProperties": true
+    },
+    "ledger_query": {
+      "type": "object",
+      "required": [
+        "query_type",
+        "target_time_sec",
+        "target_event_id",
+        "object_refs",
+        "variables",
+        "relation_refs",
+        "intervention"
+      ],
+      "properties": {
+        "query_type": {
+          "enum": [
+            "final_state",
+            "intermediate_state",
+            "state_at",
+            "event_order",
+            "count",
+            "count_transitions",
+            "changed_to"
+          ]
+        },
+        "target_time_sec": {"type": ["number", "null"]},
+        "target_event_id": {
+          "type": ["string", "array", "null"],
+          "items": {"type": "string"}
+        },
+        "event_ids": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "object_refs": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "variables": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "relation_refs": {"type": "array"},
+        "intervention": {"type": ["object", "null"]},
+        "value": {}
+      },
+      "additionalProperties": false
+    },
+    "objects": {
+      "type": "array",
+      "items": {"type": "object"}
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "event_id",
+          "event_type",
+          "start_sec",
+          "end_sec",
+          "actors",
+          "objects",
+          "operator",
+          "evidence_span_ids"
+        ],
+        "properties": {
+          "event_id": {"type": "string", "minLength": 1},
+          "event_type": {
+            "enum": [
+              "location",
+              "visibility",
+              "possession",
+              "relation",
+              "attribute",
+              "state_change"
+            ]
+          },
+          "start_sec": {"type": "number", "minimum": 0},
+          "end_sec": {"type": "number", "minimum": 0},
+          "actors": {"type": "array", "items": {"type": "string"}},
+          "objects": {"type": "array", "items": {"type": "string"}},
+          "operator": {
+            "type": "object",
+            "required": [
+              "op_type",
+              "target_object",
+              "variable",
+              "before",
+              "after",
+              "confidence"
+            ],
+            "properties": {
+              "op_type": {
+                "enum": [
+                  "location",
+                  "visibility",
+                  "possession",
+                  "relation",
+                  "attribute",
+                  "state_change"
+                ]
+              },
+              "target_object": {"type": "string"},
+              "target_object_id": {"type": ["string", "null"]},
+              "variable": {"type": "string"},
+              "before": {},
+              "after": {},
+              "preconditions": {"type": "array"},
+              "effects": {"type": "array"},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+            },
+            "additionalProperties": true
+          },
+          "evidence_span_ids": {
+            "type": "array",
+            "items": {"type": "string"}
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["object_id", "variable", "value", "time_sec", "confidence"],
+        "properties": {
+          "object_id": {"type": "string"},
+          "variable": {"type": "string"},
+          "value": {},
+          "time_sec": {"type": "number"},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "source": {"type": "string"},
+          "source_event_id": {"type": ["string", "null"]},
+          "is_initial": {"type": "boolean"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {"type": "object"}
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["evidence_span_id", "start_sec", "end_sec", "object_ids"],
+        "properties": {
+          "evidence_span_id": {"type": "string"},
+          "start_sec": {"type": "number", "minimum": 0},
+          "end_sec": {"type": "number", "minimum": 0},
+          "object_ids": {"type": "array", "items": {"type": "string"}},
+          "score": {"type": "number"},
+          "transition_critical": {"type": "boolean"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "has_video",
+        "has_question",
+        "has_answer",
+        "has_temporal_evidence",
+        "has_bbox_or_track",
+        "has_object_identity",
+        "has_state_label",
+        "has_transition_boundary",
+        "has_relation_label",
+        "has_counterfactual_label",
+        "can_define_stable_state_variable",
+        "requires_manual_state_annotation"
+      ],
+      "additionalProperties": {
+        "type": "boolean"
+      }
+    },
+    "audit": {
+      "type": "object"
+    }
+  }
+}
