@@ -1,0 +1,32 @@
+# Python/test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local tooling
+.codex_tmp/
+
+# Phase 0 media and evaluator-only artifacts must never be published.
+data/phase0/videos/
+data/phase0/contact_sheets/
+data/phase0/evaluator_only/
+data/phase0/source/
+
+# Generated manifests/reports containing machine-local or remote absolute paths.
+data/phase0/toc_phase0_candidates_30_probed.jsonl
+data/phase0/toc_phase0_candidates_30_screened.jsonl
+data/phase0/toc_phase0_deep10_candidates.jsonl
+data/phase0/toc_deep10_replacement_candidates.jsonl
+data/phase0/toc_video_probe_report.json
+data/phase0/toc_deep10_targeted_render_report.json
+data/phase0/toc_identity_targeted_round2_report.json
+
+# Source-derived candidate manifests remain local until dataset redistribution
+# terms and path redaction are reviewed.
+data/phase0/first_real_samples_raw.jsonl
+data/phase0/first_real_samples_unified.jsonl
+data/phase0/toc_phase0_candidates_30.jsonl
+data/phase0/toc_candidates_30_summary.json
+data/phase0/toc_candidate_video_ids.txt
