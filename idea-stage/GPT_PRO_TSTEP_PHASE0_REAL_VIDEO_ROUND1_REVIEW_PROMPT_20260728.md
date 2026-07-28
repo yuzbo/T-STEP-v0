@@ -10,6 +10,8 @@ scope: GPT-5 Pro 对 T-STEP-v0 Phase 0 首轮真实视频 gate failure 的聚焦
 
 代码仓库：`https://github.com/yuzbo/T-STEP-v0`
 
+评审 PR：`https://github.com/yuzbo/T-STEP-v0/pull/1`
+
 评审分支：`codex/phase0-real-video-gate`
 
 请优先检查：
