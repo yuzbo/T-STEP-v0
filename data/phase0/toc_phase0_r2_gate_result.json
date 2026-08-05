@@ -1,0 +1,130 @@
+{
+  "schema_version": "tstep-toc-r2-gate-result-v0.2",
+  "created_at": "2026-08-06T18:30:00+08:00",
+  "decision": "R2_GATE_FAILED",
+  "immutable_roster": true,
+  "replacement_performed": false,
+  "evaluator_artifact_accessed": false,
+  "training_or_gpu_started": false,
+  "score": {
+    "overall": {
+      "accepted": 6,
+      "total": 10,
+      "passed": false
+    },
+    "event_order_sensitive": {
+      "accepted": 3,
+      "total": 5,
+      "passed": false
+    },
+    "identity_visibility_sensitive": {
+      "accepted": 3,
+      "total": 5,
+      "passed": false
+    },
+    "checks": {
+      "overall_accepted_at_least_8_of_10": false,
+      "event_order_accepted_at_least_4_of_5": false,
+      "identity_visibility_accepted_at_least_4_of_5": false
+    },
+    "gate_passed": false
+  },
+  "blocked_reason_counts": {
+    "required_fully_hidden_transition_not_observed": 1,
+    "toy_is_already_in_frame_and_no_entry_transition_is_observed": 1,
+    "black_pot_remains_visible_and_no_full_gap_precedes_claimed_return": 1,
+    "red_book_has_no_post_gap_return_and_same_class_competitors_exist": 1
+  },
+  "row_decisions": [
+    {
+      "sample_id": "TOC-Bench:phase0:charades_R5WMI:32933837ab5e",
+      "video_id": "charades_R5WMI",
+      "dimension": "event_ordering",
+      "decision": "accepted",
+      "event_presupposition_status": "observed",
+      "reason_code": "three_visibility_transitions_observed_and_orderable"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_Y50QF:1d9dc2a81f99",
+      "video_id": "charades_Y50QF",
+      "dimension": "event_ordering",
+      "decision": "accepted",
+      "event_presupposition_status": "observed",
+      "reason_code": "four_visibility_transitions_observed_and_orderable"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_422:2c04c91f35a0",
+      "video_id": "perception_test_video_422",
+      "dimension": "event_ordering",
+      "decision": "blocked",
+      "event_presupposition_status": "unsupported",
+      "reason_code": "required_fully_hidden_transition_not_observed"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_11TTU:38341887d62b",
+      "video_id": "charades_11TTU",
+      "dimension": "cross_object_order",
+      "decision": "accepted",
+      "event_presupposition_status": "observed",
+      "reason_code": "two_object_visibility_boundaries_observed_and_separable"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_LV24Z:72fd7960830a",
+      "video_id": "charades_LV24Z",
+      "dimension": "cross_object_order",
+      "decision": "blocked",
+      "event_presupposition_status": "unsupported",
+      "reason_code": "toy_is_already_in_frame_and_no_entry_transition_is_observed"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_J8KPE:16d4258d42db",
+      "video_id": "charades_J8KPE",
+      "dimension": "reappear_identity",
+      "decision": "accepted",
+      "event_presupposition_status": "observed",
+      "reason_code": "fixed_open_cabinet_door_has_full_gap_and_post_gap_anchor"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_OEIR9:7e1384c66b0b",
+      "video_id": "charades_OEIR9",
+      "dimension": "reappear_identity",
+      "decision": "blocked",
+      "event_presupposition_status": "unsupported",
+      "reason_code": "black_pot_remains_visible_and_no_full_gap_precedes_claimed_return"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_3937:b272e8759d22",
+      "video_id": "perception_test_video_3937",
+      "dimension": "reappear_identity",
+      "decision": "blocked",
+      "event_presupposition_status": "unsupported",
+      "reason_code": "red_book_has_no_post_gap_return_and_same_class_competitors_exist"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_PKEZI:afd393dc6074",
+      "video_id": "charades_PKEZI",
+      "dimension": "reappear_or_disappear",
+      "decision": "accepted",
+      "event_presupposition_status": "observed",
+      "reason_code": "flower_vase_crosses_left_frame_boundary"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_5280:9c3eb2c7688d",
+      "video_id": "perception_test_video_5280",
+      "dimension": "reappear_or_disappear",
+      "decision": "accepted",
+      "event_presupposition_status": "observed",
+      "reason_code": "handheld_knife_crosses_left_frame_boundary"
+    }
+  ],
+  "artifact_sha256": {
+    "manual_review": "c87b6b96ecabf20eda6fbe38d284926191c151e70b6d14d124c64ea56b8bc99a",
+    "effective_roster_file": "1f81c91fd12ef5415a056dce60b462761791a59af4f20646f447977acf61469e",
+    "asset_report": "3c5fa31490392bdc0b5d38586b83a7c5abac8c84d87d94f34f190aa6445f19f4",
+    "probe_report": "84adc400edba8e68c28ecc8c52726f6e00a5cca762f0df55efbfd304502e9d9f",
+    "dense_render_report": "f2ea5217749920b025d764b7554a0ab76421eac7f6bb0ca485f333e484c95e18",
+    "targeted_window_spec": "0d855d40b047d0f26790369b34934c4f543cd4896ab8c3e3d975eecb79128846",
+    "targeted_render_report": "eca018b21a64b7aeaef1c0812849ced2cd9e0c69c0e4a7a871d41e50f58dd6cd"
+  },
+  "route_effect": "DEFER_GPU_AND_DO_NOT_RESAMPLE_R2; retain ledger-core code, reject TOC-Bench automatic event labels as sole local-core supervision, and redesign the real-asset source/annotation contract before any model experiment."
+}

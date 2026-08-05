@@ -1,0 +1,35 @@
+{
+  "updated": "2026-07-28",
+  "decision": "CONDITIONAL",
+  "route": "toc_bench_real_video_plus_minimal_manual_ledger_annotation",
+  "day1": {
+    "status": "completed",
+    "typed_schema_split": true,
+    "answer_blindness_validator": true,
+    "identity_scope_validator": true,
+    "conversion_certificate": true,
+    "unknown_query_status": true,
+    "negative_tests_added": 9
+  },
+  "day2": {
+    "status": "completed_gate_failed",
+    "candidate_count": 30,
+    "unique_video_count": 30,
+    "container_verified_count": 30,
+    "local_decode_verified_count": 30,
+    "tier_balance_note": "TOC dimensions are tier-bound; selected natural distribution is tier1=5,tier2=15,tier3=10.",
+    "human_screening_complete": true,
+    "coarse_likely_count": 15,
+    "coarse_uncertain_count": 12,
+    "coarse_unsuitable_count": 3,
+    "deep_roster_size": 10,
+    "deep_accepted_count": 7,
+    "deep_backup_or_blocked_count": 3,
+    "required_deep_accepted_count": 8,
+    "gate_passed": false
+  },
+  "gpu_or_training_started": false,
+  "reason_no_gpu": "Phase 0 Day 1-2 are schema, data, decode, and annotation-feasibility experiments; GPU training is out of scope before gates pass.",
+  "next_gate": "Focused implementation review must resolve event presupposition, visibility-operator overlap, identity-anchor rules, and endpoint-aware sampling before more annotation or any GPU run.",
+  "gate_report": "data/phase0/toc_phase0_gate_report.json"
+}

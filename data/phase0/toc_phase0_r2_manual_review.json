@@ -1,0 +1,194 @@
+{
+  "schema_version": "tstep-toc-r2-manual-review-v0.2",
+  "review_id": "toc-r2-blind-manual-review-20260806",
+  "created_at": "2026-08-06T18:00:00+08:00",
+  "original_preseal_roster_sha256": "c4d40d3e7a5cf1027ecedbc2165c680bf4af677601a64f971be874c381041fbf",
+  "effective_roster_sha256": "e1bb008745aae4ccf30b57402764abfaf464a63a74971ce0e0e0872e8a18adfb",
+  "prompt_amendment_id": "R2_PRESEAL_AMENDMENT_001",
+  "sampler_version": "tstep-four-stage-sampler-v0.2.2",
+  "review_protocol": {
+    "stages_completed": [
+      "coarse_5_frame",
+      "endpoint_inclusive_dense_24",
+      "question_aware_targeted",
+      "manual_contract_review"
+    ],
+    "evaluator_artifact_accessed": false,
+    "training_or_gpu_started": false,
+    "replacement_performed": false,
+    "reviewer": "codex_manual_review_with_independent_blind_checks",
+    "accepted_definition": "Every required event is observed, affected participants are identifiable, completion boundaries are operationally supportable, and identity-dependent items admit ambiguity=none."
+  },
+  "rows": [
+    {
+      "sample_id": "TOC-Bench:phase0:charades_R5WMI:32933837ab5e",
+      "video_id": "charades_R5WMI",
+      "dimension": "event_ordering",
+      "cohort": "event_order_sensitive",
+      "decision": "accepted",
+      "event_presupposition_status": "observed",
+      "reason_code": "three_visibility_transitions_observed_and_orderable",
+      "typed_events": [
+        {"prompt_label": "C", "operator_type": "visibility_transition", "target": "old man in pink pants", "from_state": "fully_visible", "to_state": "partly_hidden", "completion_lo_ms": 5050, "completion_hi_ms": 5170},
+        {"prompt_label": "B", "operator_type": "visibility_transition", "target": "old man in pink pants", "from_state": "partly_hidden", "to_state": "fully_hidden", "completion_lo_ms": 5230, "completion_hi_ms": 5290},
+        {"prompt_label": "A", "operator_type": "visibility_transition", "target": "old man in pink pants", "from_state": "fully_hidden", "to_state": "partly_visible", "completion_lo_ms": 5950, "completion_hi_ms": 6010}
+      ],
+      "evidence": {"window": "pink_subject_occlusion_cycle", "key_pages": [1, 2], "full_hidden_interval_ms": [5290, 5890]},
+      "review_confidence": 0.9
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_Y50QF:1d9dc2a81f99",
+      "video_id": "charades_Y50QF",
+      "dimension": "event_ordering",
+      "cohort": "event_order_sensitive",
+      "decision": "accepted",
+      "event_presupposition_status": "observed",
+      "reason_code": "four_visibility_transitions_observed_and_orderable",
+      "typed_events": [
+        {"prompt_label": "C", "operator_type": "leaves_frame", "target": "red cup", "from_state": "in_frame", "to_state": "out_of_frame", "completion_lo_ms": 22700, "completion_hi_ms": 23300},
+        {"prompt_label": "B", "operator_type": "enters_frame", "target": "red cup", "from_state": "out_of_frame", "to_state": "in_frame", "completion_lo_ms": 23400, "completion_hi_ms": 24100},
+        {"prompt_label": "A", "operator_type": "visibility_transition", "target": "red cup", "from_state": "visible", "to_state": "fully_hidden", "completion_lo_ms": 28900, "completion_hi_ms": 29800},
+        {"prompt_label": "D", "operator_type": "visibility_transition", "target": "red cup", "from_state": "fully_hidden", "to_state": "visible", "completion_lo_ms": 33200, "completion_hi_ms": 33800}
+      ],
+      "evidence": {"windows": ["red_cup_initial_presence", "red_cup_visibility_cycle"], "key_pages": [3, 4, 5, 6]},
+      "review_confidence": 0.75
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_422:2c04c91f35a0",
+      "video_id": "perception_test_video_422",
+      "dimension": "event_ordering",
+      "cohort": "event_order_sensitive",
+      "decision": "blocked",
+      "event_presupposition_status": "unsupported",
+      "reason_code": "required_fully_hidden_transition_not_observed",
+      "observed_evidence": [
+        {"operator_type": "visibility_transition", "target": "red apple", "from_state": "fully_visible", "to_state": "partly_hidden", "evidence_span_ms": [600, 2820]},
+        {"operator_type": "visibility_transition", "target": "red apple", "from_state": "partly_hidden", "to_state": "fully_visible", "completion_lo_ms": 2820, "completion_hi_ms": 3020}
+      ],
+      "missing_required_event": {"prompt_label": "A", "operator_type": "visibility_transition", "to_state": "fully_hidden"},
+      "evidence": {"window": "red_apple_full_visibility_sweep", "reviewed_span_ms": [0, 32834], "key_pages": [1, 2, 11]},
+      "review_confidence": 0.95
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_11TTU:38341887d62b",
+      "video_id": "charades_11TTU",
+      "dimension": "cross_object_order",
+      "cohort": "event_order_sensitive",
+      "decision": "accepted",
+      "event_presupposition_status": "observed",
+      "reason_code": "two_object_visibility_boundaries_observed_and_separable",
+      "typed_events": [
+        {"operator_type": "visibility_transition", "target": "wooden chair", "from_state": "fully_visible", "to_state": "partly_hidden", "completion_lo_ms": 2030, "completion_hi_ms": 2100},
+        {"operator_type": "visibility_transition", "target": "tulip bouquet", "from_state": "visible", "to_state": "fully_hidden", "completion_lo_ms": 2210, "completion_hi_ms": 2310}
+      ],
+      "evidence": {"window": "chair_bouquet_occlusion_order", "key_pages": [1, 2]},
+      "review_confidence": 0.85
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_LV24Z:72fd7960830a",
+      "video_id": "charades_LV24Z",
+      "dimension": "cross_object_order",
+      "cohort": "event_order_sensitive",
+      "decision": "blocked",
+      "event_presupposition_status": "unsupported",
+      "reason_code": "toy_is_already_in_frame_and_no_entry_transition_is_observed",
+      "observed_evidence": [
+        {"operator_type": "visibility_state", "target": "wooden dresser", "state": "partly_hidden_or_frame_clipped", "reviewed_span_ms": [0, 5000]},
+        {"operator_type": "presence_state", "target": "toys on floor", "state": "already_in_frame", "reviewed_span_ms": [0, 5000]}
+      ],
+      "missing_required_event": {"operator_type": "enters_frame", "target": "toy on floor"},
+      "evidence": {"windows": ["dresser_and_toy_initial_state", "toy_late_boundary_check"], "reviewed_spans_ms": [[0, 5000], [22000, 26800]], "key_pages": [1, 5, 8]},
+      "review_confidence": 0.9
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_J8KPE:16d4258d42db",
+      "video_id": "charades_J8KPE",
+      "dimension": "reappear_identity",
+      "cohort": "identity_visibility_sensitive",
+      "decision": "accepted",
+      "event_presupposition_status": "observed",
+      "reason_code": "fixed_open_cabinet_door_has_full_gap_and_post_gap_anchor",
+      "typed_events": [
+        {"operator_type": "visibility_transition", "target": "open cabinet door", "from_state": "fully_hidden", "to_state": "partly_visible", "completion_lo_ms": 21690, "completion_hi_ms": 21790}
+      ],
+      "identity_certificate_summary": {
+        "pre_gap_anchor_ms": [16980, 17680],
+        "fully_hidden_gap_ms": [18480, 21690],
+        "post_gap_anchor_ms": [21790, 22290],
+        "persistent_basis": "fixed_hinge_and_unique_open_glass_door_geometry",
+        "competitor_inventory_reviewed": true,
+        "ambiguity": "none",
+        "manual_oracle_basis": true
+      },
+      "evidence": {"windows": ["cabinet_door_pre_gap_anchor", "cabinet_door_occlusion_return"], "key_pages": [1, 2, 3, 4]},
+      "review_confidence": 0.85
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_OEIR9:7e1384c66b0b",
+      "video_id": "charades_OEIR9",
+      "dimension": "reappear_identity",
+      "cohort": "identity_visibility_sensitive",
+      "decision": "blocked",
+      "event_presupposition_status": "unsupported",
+      "reason_code": "black_pot_remains_visible_and_no_full_gap_precedes_claimed_return",
+      "observed_evidence": [
+        {"operator_type": "visibility_state", "target": "black pot", "state": "visible_or_partly_hidden", "reviewed_span_ms": [0, 12000]}
+      ],
+      "missing_required_event": {"operator_type": "visibility_transition", "from_state": "fully_hidden", "to_state": "visible"},
+      "identity_certificate_summary": {"not_attempted_reason": "event_presupposition_failed"},
+      "evidence": {"window": "black_pot_identity_cycle", "key_pages": [5, 6, 7, 8]},
+      "review_confidence": 0.92
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_3937:b272e8759d22",
+      "video_id": "perception_test_video_3937",
+      "dimension": "reappear_identity",
+      "cohort": "identity_visibility_sensitive",
+      "decision": "blocked",
+      "event_presupposition_status": "unsupported",
+      "reason_code": "red_book_has_no_post_gap_return_and_same_class_competitors_exist",
+      "observed_evidence": [
+        {"operator_type": "visibility_state", "target": "red Banchan book", "state": "visible", "reviewed_span_ms": [0, 3510]},
+        {"operator_type": "occlusion_state", "target": "red Banchan book", "state": "covered_without_post_anchor", "reviewed_span_ms": [3600, 8985]}
+      ],
+      "identity_certificate_summary": {
+        "pre_gap_anchor_present": true,
+        "post_gap_anchor_present": false,
+        "same_class_competitors": ["pink/red Nut Cod book", "other stacked books"],
+        "ambiguity": "multi_instance"
+      },
+      "evidence": {"window": "red_book_competitor_inventory", "reviewed_span_ms": [0, 8985], "key_pages": [1, 3, 4, 6]},
+      "review_confidence": 0.96
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_PKEZI:afd393dc6074",
+      "video_id": "charades_PKEZI",
+      "dimension": "reappear_or_disappear",
+      "cohort": "identity_visibility_sensitive",
+      "decision": "accepted",
+      "event_presupposition_status": "observed",
+      "reason_code": "flower_vase_crosses_left_frame_boundary",
+      "typed_events": [
+        {"operator_type": "leaves_frame", "target": "flower vase", "from_state": "in_frame", "to_state": "out_of_frame", "completion_lo_ms": 28120, "completion_hi_ms": 28190, "frame_boundary_crossing": true}
+      ],
+      "participant_verification": {"basis": "continuous_stationary_vase_track_during_camera_pan", "ambiguity": "none"},
+      "evidence": {"window": "flower_vase_exit_boundary", "key_pages": [4, 5]},
+      "review_confidence": 0.94
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_5280:9c3eb2c7688d",
+      "video_id": "perception_test_video_5280",
+      "dimension": "reappear_or_disappear",
+      "cohort": "identity_visibility_sensitive",
+      "decision": "accepted",
+      "event_presupposition_status": "observed",
+      "reason_code": "handheld_knife_crosses_left_frame_boundary",
+      "typed_events": [
+        {"operator_type": "leaves_frame", "target": "handheld knife", "from_state": "in_frame", "to_state": "out_of_frame", "completion_lo_ms": 27420, "completion_hi_ms": 27520, "frame_boundary_crossing": true}
+      ],
+      "participant_verification": {"basis": "continuous_handheld_instance_track_before_boundary_crossing", "same_class_background_utensils_reviewed": true, "ambiguity": "none"},
+      "evidence": {"window": "knife_disappearance_boundary", "key_pages": [1]},
+      "review_confidence": 0.86
+    }
+  ]
+}

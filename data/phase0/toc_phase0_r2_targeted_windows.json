@@ -1,0 +1,80 @@
+{
+  "schema_version": "tstep-targeted-window-spec-v0.2.1",
+  "gold_accessed": false,
+  "purpose": "Question-aware R2 boundary and identity review after endpoint-inclusive dense sampling.",
+  "rows": [
+    {
+      "video_id": "charades_R5WMI",
+      "question_id": "32933837ab5e",
+      "windows": [
+        {"label": "pink_subject_occlusion_cycle", "start_s": 4.5, "end_s": 8.0, "step_s": 0.05}
+      ]
+    },
+    {
+      "video_id": "charades_Y50QF",
+      "question_id": "1d9dc2a81f99",
+      "windows": [
+        {"label": "red_cup_initial_presence", "start_s": 0.0, "end_s": 2.0, "step_s": 0.1},
+        {"label": "red_cup_visibility_cycle", "start_s": 17.0, "end_s": 37.333, "step_s": 0.2}
+      ]
+    },
+    {
+      "video_id": "perception_test_video_422",
+      "question_id": "2c04c91f35a0",
+      "windows": [
+        {"label": "red_apple_full_visibility_sweep", "start_s": 0.0, "end_s": 32.834, "step_s": 0.2}
+      ]
+    },
+    {
+      "video_id": "charades_11TTU",
+      "question_id": "38341887d62b",
+      "windows": [
+        {"label": "chair_bouquet_occlusion_order", "start_s": 1.5, "end_s": 5.0, "step_s": 0.05}
+      ]
+    },
+    {
+      "video_id": "charades_LV24Z",
+      "question_id": "72fd7960830a",
+      "windows": [
+        {"label": "dresser_and_toy_initial_state", "start_s": 0.0, "end_s": 5.0, "step_s": 0.1},
+        {"label": "toy_late_boundary_check", "start_s": 22.0, "end_s": 26.8, "step_s": 0.1}
+      ]
+    },
+    {
+      "video_id": "charades_J8KPE",
+      "question_id": "16d4258d42db",
+      "windows": [
+        {"label": "cabinet_door_pre_gap_anchor", "start_s": 0.0, "end_s": 6.0, "step_s": 0.2},
+        {"label": "cabinet_door_occlusion_return", "start_s": 17.0, "end_s": 30.0, "step_s": 0.1}
+      ]
+    },
+    {
+      "video_id": "charades_OEIR9",
+      "question_id": "7e1384c66b0b",
+      "windows": [
+        {"label": "black_pot_identity_cycle", "start_s": 0.0, "end_s": 12.0, "step_s": 0.1}
+      ]
+    },
+    {
+      "video_id": "perception_test_video_3937",
+      "question_id": "b272e8759d22",
+      "windows": [
+        {"label": "red_book_competitor_inventory", "start_s": 0.0, "end_s": 8.985, "step_s": 0.1}
+      ]
+    },
+    {
+      "video_id": "charades_PKEZI",
+      "question_id": "afd393dc6074",
+      "windows": [
+        {"label": "flower_vase_exit_boundary", "start_s": 25.0, "end_s": 31.0, "step_s": 0.05}
+      ]
+    },
+    {
+      "video_id": "perception_test_video_5280",
+      "question_id": "9c3eb2c7688d",
+      "windows": [
+        {"label": "knife_disappearance_boundary", "start_s": 27.0, "end_s": 34.951, "step_s": 0.1}
+      ]
+    }
+  ]
+}

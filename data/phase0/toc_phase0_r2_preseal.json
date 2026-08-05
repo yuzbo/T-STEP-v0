@@ -1,0 +1,106 @@
+{
+  "schema_version": "tstep-toc-r2-preseal-v0.2",
+  "created_at": "2026-08-06T00:00:00+08:00",
+  "decision": "R2_PRESEALED",
+  "roster_locked": true,
+  "replacement_allowed": false,
+  "gold_accessed_for_selection": false,
+  "prior_candidate_video_count_excluded": 30,
+  "all_video_ids_new_vs_r1_candidate_30": true,
+  "seed": 20260806,
+  "quotas": {
+    "event_ordering": 3,
+    "cross_object_order": 2,
+    "reappear_identity": 3,
+    "reappear_or_disappear": 2
+  },
+  "candidate_pool_count": 407,
+  "candidate_pool_by_dim": {
+    "cross_object_order": 174,
+    "event_ordering": 95,
+    "reappear_or_disappear": 120,
+    "reappear_identity": 18
+  },
+  "candidate_pool_sha256": "a61d7dfef42f0832ea45cc030ba134f83f36fa88cc478c2e01079dd732068e08",
+  "prior_candidate_manifest_sha256": "17e90ef720029063e40f04c72e73c86c4084966040200ec4172a7f8e400ae5f1",
+  "roster_sha256": "c4d40d3e7a5cf1027ecedbc2165c680bf4af677601a64f971be874c381041fbf",
+  "evaluator_gold_sha256": "b7c15b8b5cd3549fe0b159e1c7b853ca35be870daf97f97e6eb3f5a75d189019",
+  "roster": [
+    {
+      "sample_id": "TOC-Bench:phase0:charades_R5WMI:32933837ab5e",
+      "video_id": "charades_R5WMI",
+      "dimension": "event_ordering",
+      "asset_status": "download_pending",
+      "deep_review_status": "not_started"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_Y50QF:1d9dc2a81f99",
+      "video_id": "charades_Y50QF",
+      "dimension": "event_ordering",
+      "asset_status": "download_pending",
+      "deep_review_status": "not_started"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_422:2c04c91f35a0",
+      "video_id": "perception_test_video_422",
+      "dimension": "event_ordering",
+      "asset_status": "download_pending",
+      "deep_review_status": "not_started"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_11TTU:38341887d62b",
+      "video_id": "charades_11TTU",
+      "dimension": "cross_object_order",
+      "asset_status": "download_pending",
+      "deep_review_status": "not_started"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_LV24Z:72fd7960830a",
+      "video_id": "charades_LV24Z",
+      "dimension": "cross_object_order",
+      "asset_status": "download_pending",
+      "deep_review_status": "not_started"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_J8KPE:16d4258d42db",
+      "video_id": "charades_J8KPE",
+      "dimension": "reappear_identity",
+      "asset_status": "download_pending",
+      "deep_review_status": "not_started"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_OEIR9:7e1384c66b0b",
+      "video_id": "charades_OEIR9",
+      "dimension": "reappear_identity",
+      "asset_status": "download_pending",
+      "deep_review_status": "not_started"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_3937:b272e8759d22",
+      "video_id": "perception_test_video_3937",
+      "dimension": "reappear_identity",
+      "asset_status": "download_pending",
+      "deep_review_status": "not_started"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_PKEZI:afd393dc6074",
+      "video_id": "charades_PKEZI",
+      "dimension": "reappear_or_disappear",
+      "asset_status": "download_pending",
+      "deep_review_status": "not_started"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_5280:9c3eb2c7688d",
+      "video_id": "perception_test_video_5280",
+      "dimension": "reappear_or_disappear",
+      "asset_status": "download_pending",
+      "deep_review_status": "not_started"
+    }
+  ],
+  "pass_gate": {
+    "overall": "accepted >= 8/10",
+    "event_order_sensitive": "accepted >= 4/5",
+    "identity_visibility_sensitive": "accepted >= 4/5"
+  },
+  "gpu_locked": true
+}

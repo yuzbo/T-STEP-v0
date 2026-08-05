@@ -1,0 +1,81 @@
+{
+  "schema_version": "tstep-toc-r2-assets-v0.2",
+  "preseal_roster_sha256": "c4d40d3e7a5cf1027ecedbc2165c680bf4af677601a64f971be874c381041fbf",
+  "repo_id": "anonymous-video-benchmark/toc_bench",
+  "requested_count": 10,
+  "materialized_count": 10,
+  "all_nonempty": true,
+  "gpu_or_training_started": false,
+  "rows": [
+    {
+      "sample_id": "TOC-Bench:phase0:charades_R5WMI:32933837ab5e",
+      "video_id": "charades_R5WMI",
+      "status": "materialized",
+      "file_size_bytes": 769502,
+      "sha256": "5b096bb06a9641a65e60b5b9cae5d682fdfb99f9aa81e0c690c85e9c518cb4c0"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_Y50QF:1d9dc2a81f99",
+      "video_id": "charades_Y50QF",
+      "status": "materialized",
+      "file_size_bytes": 2004012,
+      "sha256": "c4567de5980a3a6b80e226bc2201977a7adb049acaec7f1982bc981cdc03ed91"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_422:2c04c91f35a0",
+      "video_id": "perception_test_video_422",
+      "status": "materialized",
+      "file_size_bytes": 23162069,
+      "sha256": "9e98def0a573f28960553d06a823cb82e4fb9cd8b56f50013aab972b1e8ab095"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_11TTU:38341887d62b",
+      "video_id": "charades_11TTU",
+      "status": "materialized",
+      "file_size_bytes": 1306251,
+      "sha256": "593b7e6f1956cd20c4f2123be3ce84d3abf3f972c543342f9cf98c3dc47caaaa"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_LV24Z:72fd7960830a",
+      "video_id": "charades_LV24Z",
+      "status": "materialized",
+      "file_size_bytes": 1309427,
+      "sha256": "9a8a28cf88d36f2eef256bfd9b372ff89f0fed2daa3ed6c46a27fb34006ff4a4"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_J8KPE:16d4258d42db",
+      "video_id": "charades_J8KPE",
+      "status": "materialized",
+      "file_size_bytes": 1631994,
+      "sha256": "7c441345e3a7240626410c8f88753b3f6c9df73b82f1c54a8fa8db87d6d53090"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_OEIR9:7e1384c66b0b",
+      "video_id": "charades_OEIR9",
+      "status": "materialized",
+      "file_size_bytes": 2468568,
+      "sha256": "0fc936e823843dfaf2527c95b3c4b8dca7c7ffbb00baefa6798067669930948d"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_3937:b272e8759d22",
+      "video_id": "perception_test_video_3937",
+      "status": "materialized",
+      "file_size_bytes": 1539315,
+      "sha256": "503cd2bd1db0206af28054119888cff33959ba5b2574443f0f1996dc85287291"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_PKEZI:afd393dc6074",
+      "video_id": "charades_PKEZI",
+      "status": "materialized",
+      "file_size_bytes": 2566588,
+      "sha256": "f34642fe5984df8dc8bd2b38550519c94a19e39c052208acbbf09b80b66b9528"
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_5280:9c3eb2c7688d",
+      "video_id": "perception_test_video_5280",
+      "status": "materialized",
+      "file_size_bytes": 39268919,
+      "sha256": "bbe319bd9de98032e0d68594147b95c69b7b926327daba8a37c5808f9f02b955"
+    }
+  ]
+}
