@@ -10,6 +10,7 @@ from tstep_v0.ledger_schema import (
     ConversionCertificate,
     EntityRef,
     EventOperator,
+    EventPresuppositionStatus,
     IdentityAnchor,
     IdentityScope,
     MetricApplicability,
@@ -80,6 +81,7 @@ def test_interval_triplet_only_becomes_operator_with_complete_certificate():
         apply_boundary_id="b1",
         reviewer="annotator-a",
         provenance=Provenance(source="manual"),
+        certificate_id="cert:candidate",
     )
     with pytest.raises(ValidationError, match="commit_boundary_verified"):
         candidate_to_event_operator(candidate, incomplete)
@@ -169,7 +171,7 @@ def test_strict_replay_rejects_failed_precondition():
     )
 
     with pytest.raises(LedgerExecutionError, match="expected"):
-        apply_event_operator(ledger, invalid, strict=True)
+        apply_event_operator(ledger, invalid, strict=True, allow_unverified_toy=True)
 
 
 def test_metric_applicability_requires_proof_events_and_identity_dependency():
@@ -178,6 +180,10 @@ def test_metric_applicability_requires_proof_events_and_identity_dependency():
         query_ast={"operator": "final_state"},
         target_entity_ids=("cup_1",),
         expected_answer_type="short_text",
+        event_presupposition_status=EventPresuppositionStatus.OBSERVED,
+        presupposed_event_refs=("move",),
+        presupposition_evidence_refs=("ev:move",),
+        reviewed_span_ms=(0, 2000),
         metric_applicability=MetricApplicability(transition_f1=True),
     )
     with pytest.raises(ValidationError, match="proof-required"):
@@ -188,6 +194,10 @@ def test_metric_applicability_requires_proof_events_and_identity_dependency():
         query_ast={"operator": "final_state"},
         target_entity_ids=("cup_1",),
         expected_answer_type="short_text",
+        event_presupposition_status=EventPresuppositionStatus.OBSERVED,
+        presupposed_event_refs=("move",),
+        presupposition_evidence_refs=("ev:move",),
+        reviewed_span_ms=(0, 2000),
         proof_requirements=ProofRequirements(
             required_event_ids=("move",),
             identity_dependent=True,

@@ -44,7 +44,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     samples = list(read_jsonl(args.input))
-    report = evaluate_samples(samples, corruption_mode="drop_last", run_id=args.run_id)
+    report = evaluate_samples(samples, run_id=args.run_id)
     write_jsonl(args.output, report["results"])
 
     summary = {key: value for key, value in report.items() if key != "results"}

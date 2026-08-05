@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://tstep.local/schemas/unified_sample_schema.json",
-  "title": "T-STEP-v0 unified sample",
+  "title": "T-STEP-v0.2 evaluator-only unified synthetic sample",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -22,7 +22,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "tstep-ledger-core-v0.1"
+      "const": "tstep-ledger-core-v0.2"
     },
     "sample_id": {
       "type": "string",
@@ -46,7 +46,7 @@
         "fps": {"type": "number", "minimum": 0},
         "frame_count": {"type": "integer", "minimum": 0}
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
     "question": {
       "type": "object",
@@ -82,7 +82,7 @@
         "gt_answer": {},
         "gt_answer_normalized": {}
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
     "ledger_query": {
       "type": "object",
@@ -192,16 +192,19 @@
               "after": {},
               "preconditions": {"type": "array"},
               "effects": {"type": "array"},
-              "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "verification_status": {"enum": ["verified", "unverified", "metadata_only"]},
+              "conversion_certificate_id": {"type": ["string", "null"]},
+              "identity_certificate_id": {"type": ["string", "null"]}
             },
-            "additionalProperties": true
+            "additionalProperties": false
           },
           "evidence_span_ids": {
             "type": "array",
             "items": {"type": "string"}
           }
         },
-        "additionalProperties": true
+        "additionalProperties": false
       }
     },
     "states": {

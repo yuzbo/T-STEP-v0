@@ -1,0 +1,20 @@
+{"from":"idea:tstep-hierarchical-semantic-correction","to":"paper:chen2026_toc_bench","type":"inspired_by","evidence":"TOC-Bench provides the real-video temporal object consistency diagnostic and current Phase 0 asset source."}
+{"from":"idea:tstep-hierarchical-semantic-correction","to":"paper:ma2026_scalelong","type":"inspired_by","evidence":"ScaleLong operationalizes same-content questions at four temporal scales."}
+{"from":"idea:tstep-hierarchical-semantic-correction","to":"paper:islam2024_video_recap","type":"inspired_by","evidence":"Video ReCap and Ego4D-HCap provide a three-level clip-segment-video caption hierarchy."}
+{"from":"idea:tstep-hierarchical-semantic-correction","to":"paper:sadhu2021_vidsitu","type":"inspired_by","evidence":"VidSitu supplies the event-semantic middle layer through roles, coreference, and relations."}
+{"from":"idea:tstep-hierarchical-semantic-correction","to":"paper:xue2024_vidosc","type":"inspired_by","evidence":"VidOSC provides explicit initial-transitioning-end temporal state intervals."}
+{"from":"idea:tstep-hierarchical-semantic-correction","to":"paper:peddi2024_captaincook4d","type":"inspired_by","evidence":"CaptainCook4D provides real procedural steps and induced errors."}
+{"from":"idea:tstep-hierarchical-semantic-correction","to":"paper:loginova2026_pie_v","type":"inspired_by","evidence":"PIE-V provides structured mistake injection and recovery correction traces."}
+{"from":"paper:ma2026_scalelong","to":"gap:G1","type":"addresses_gap","evidence":"Same-video Clip/Shot/Event/Story questions partially address cross-scale comparability, but not structural links."}
+{"from":"paper:islam2024_video_recap","to":"gap:G1","type":"addresses_gap","evidence":"Clip, segment, and video captions partially instantiate a semantic hierarchy."}
+{"from":"paper:sadhu2021_vidsitu","to":"gap:G3","type":"addresses_gap","evidence":"Entity coreference connects participants across event intervals, but only in short clips."}
+{"from":"paper:chen2026_toc_bench","to":"gap:G3","type":"addresses_gap","evidence":"Object-track grounded construction targets identity persistence, although full tracks are not part of the public QA schema."}
+{"from":"paper:xue2024_vidosc","to":"gap:G4","type":"addresses_gap","evidence":"Initial/transitioning/end intervals support state localization but not executable operators."}
+{"from":"paper:peddi2024_captaincook4d","to":"gap:G2","type":"addresses_gap","evidence":"Normal and induced-error procedures provide error supervision without systematic recovery targets."}
+{"from":"paper:loginova2026_pie_v","to":"gap:G2","type":"addresses_gap","evidence":"PIE-V explicitly generates error and recovery correction traces with coherence rubrics."}
+{"from":"idea:tstep-hierarchical-semantic-correction","to":"gap:G1","type":"addresses_gap","evidence":"The proposed data contract makes same-video cross-level structural links mandatory."}
+{"from":"idea:tstep-hierarchical-semantic-correction","to":"gap:G2","type":"addresses_gap","evidence":"The proposed task requires legal corruptions, repair targets, and post-repair consistency proofs."}
+{"from":"idea:tstep-hierarchical-semantic-correction","to":"gap:G3","type":"addresses_gap","evidence":"Persistent identity anchors are linked to state, event roles, and episode references."}
+{"from":"idea:tstep-hierarchical-semantic-correction","to":"gap:G4","type":"addresses_gap","evidence":"T-STEP-v0 ledger-core supplies the candidate typed executable semantics."}
+{"from":"idea:tstep-hierarchical-semantic-correction","to":"experiment:toc-r2-contract-resample","type":"tested_by","evidence":"R2 tests whether a contract-fixed local ledger core is supportable on new immutable TOC-Bench real-video samples."}
+{"from":"experiment:toc-r2-contract-resample","to":"paper:chen2026_toc_bench","type":"evaluates_on","evidence":"The experiment uses ten all-new TOC-Bench videos and finds 6/10 strict contract compatibility, so TOC-Bench remains a diagnostic rather than sole supervision source."}

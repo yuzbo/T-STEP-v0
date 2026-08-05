@@ -15,7 +15,7 @@ def test_apply_event_operator_updates_state_and_keeps_history():
         after="shelf",
     )
 
-    updated = apply_event_operator(ledger, op)
+    updated = apply_event_operator(ledger, op, allow_unverified_toy=True)
 
     assert updated.get_state("cup", "location") == "shelf"
     assert ledger.get_state("cup", "location") == "table"
@@ -38,11 +38,13 @@ def test_precondition_mismatch_records_conflict_without_state_change():
         after="shelf",
     )
 
-    updated = apply_event_operator(ledger, op)
+    updated = apply_event_operator(ledger, op, allow_unverified_toy=True)
 
     assert updated.get_state("cup", "location") == "table"
     assert len(updated.conflicts) == 1
     assert updated.conflicts[0].event_id == "e_bad"
+    assert updated.events == ()
+    assert [event.event_id for event in updated.rejected_events] == ["e_bad"]
 
 
 def test_apply_event_operators_replays_in_time_order():
@@ -50,7 +52,7 @@ def test_apply_event_operators_replays_in_time_order():
     later = EventOperator("e2", 3.0, 4.0, "location", "cup", "location", "shelf", "sink")
     earlier = EventOperator("e1", 1.0, 2.0, "location", "cup", "location", "table", "shelf")
 
-    updated = apply_event_operators(ledger, [later, earlier])
+    updated = apply_event_operators(ledger, [later, earlier], allow_unverified_toy=True)
 
     assert updated.get_state("cup", "location") == "sink"
     assert [record.event_id for record in updated.history("cup", "location")] == [

@@ -205,8 +205,18 @@ def candidate_row(
     metadata = item["metadata"]
     dim = metadata["dim"]
     choices = choices_for(item)
+    question = {
+        "qa_id": item["qa_id"],
+        "text": item["question"],
+        "format": item["format"],
+        "choices": choices,
+    }
+    query_events = query_event_descriptions_for(item)
+    if query_events:
+        question["query_event_descriptions"] = query_events
+
     return {
-        "schema_version": "tstep-toc-candidate-v0.1",
+        "schema_version": "tstep-toc-candidate-v0.2",
         "sample_id": f"TOC-Bench:phase0:{item['video_id']}:{item['qa_id']}",
         "video": {
             "video_id": item["video_id"],
@@ -216,13 +226,7 @@ def candidate_row(
             "fps": None,
             "frame_count": None,
         },
-        "question": {
-            "qa_id": item["qa_id"],
-            "text": item["question"],
-            "format": item["format"],
-            "choices": choices,
-            "events": item.get("events", []),
-        },
+        "question": question,
         "source_metadata": {
             "dim": dim,
             "tier": metadata["tier"],
@@ -264,6 +268,36 @@ def candidate_row(
             "gold_artifact": "data/phase0/evaluator_only/toc_gold_30.jsonl",
         },
     }
+
+
+def query_event_descriptions_for(item: Mapping[str, Any]) -> List[Dict[str, str]]:
+    """Project only answer-free ordering options required to render the prompt.
+
+    TOC-Bench presents ``events`` as shuffled, labelled prompt options and stores
+    the answer separately in ``correct_order``.  This projection intentionally
+    drops every field except the released ``label`` and ``event_text`` pair.
+    """
+
+    if not str(item.get("format", "")).startswith("ordering"):
+        return []
+    raw_events = item.get("events")
+    if not isinstance(raw_events, list) or len(raw_events) not in {3, 4}:
+        raise ValueError("ordering item requires three or four query events")
+
+    projected: List[Dict[str, str]] = []
+    seen_labels = set()
+    for event in raw_events:
+        if not isinstance(event, Mapping):
+            raise ValueError("ordering query event must be an object")
+        label = str(event.get("label", "")).strip()
+        event_text = str(event.get("event_text", "")).strip()
+        if label not in {"A", "B", "C", "D"} or label in seen_labels:
+            raise ValueError("ordering query event labels must be unique A-D")
+        if not event_text:
+            raise ValueError("ordering query event_text must be non-empty")
+        seen_labels.add(label)
+        projected.append({"label": label, "event_text": event_text})
+    return projected
 
 
 def gold_row(item: Mapping[str, Any]) -> Dict[str, Any]:

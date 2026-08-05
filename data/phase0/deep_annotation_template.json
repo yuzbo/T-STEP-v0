@@ -1,5 +1,5 @@
 {
-  "schema_version": "tstep-deep-annotation-v0.1",
+  "schema_version": "tstep-deep-annotation-v0.2",
   "sample": {
     "sample_id": "__FILL__",
     "video_id": "__FILL__",
@@ -9,9 +9,15 @@
     "question_text": "",
     "query_type": "visibility"
   },
+  "evidence_spans": [],
   "entities": [],
   "state_intervals": [],
+  "visibility_observations": [],
+  "state_change_candidates": [],
   "transition_boundaries": [],
+  "terminal_predicates": [],
+  "identity_certificates": [],
+  "conversion_certificates": [],
   "event_operators": [],
   "initial_state_records": [],
   "query_spec": {
@@ -19,6 +25,11 @@
     "query_ast": {},
     "target_entity_ids": [],
     "expected_answer_type": "__FILL__",
+    "event_presupposition_status": "not_required",
+    "presupposed_event_refs": [],
+    "presupposition_evidence_refs": [],
+    "reviewed_span_ms": null,
+    "presupposition_reason_code": null,
     "proof_requirements": {
       "required_event_ids": [],
       "required_state_record_ids": [],
@@ -33,6 +44,7 @@
     }
   },
   "corruption_specs": [],
+  "correction_records": [],
   "annotation_audit": {
     "annotator_id": "__FILL__",
     "answer_visible": false,

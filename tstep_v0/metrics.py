@@ -5,6 +5,8 @@ from __future__ import annotations
 import math
 from typing import Any, Iterable, Optional, Sequence, Tuple
 
+from .ledger_schema import QueryStatus
+
 
 Span = Tuple[float, float]
 
@@ -23,9 +25,9 @@ def event_recall_at_budget(
     *,
     budget: Optional[int] = None,
     iou_threshold: float = 0.1,
-) -> float:
+) -> Optional[float]:
     if not gold_spans:
-        return 1.0
+        return None
     selected = list(selected_spans[:budget])
     matched = 0
     for gold in gold_spans:
@@ -34,45 +36,66 @@ def event_recall_at_budget(
     return matched / len(gold_spans)
 
 
-def ledger_query_accuracy(predictions: Sequence[Any], targets: Sequence[Any]) -> float:
+def ledger_query_accuracy(
+    predictions: Sequence[Any],
+    targets: Sequence[Any],
+    *,
+    statuses: Optional[Sequence[QueryStatus]] = None,
+    eligible: Optional[Sequence[bool]] = None,
+) -> Optional[float]:
     if len(predictions) != len(targets):
         raise ValueError("predictions and targets must have the same length")
-    if not targets:
-        return 1.0
-    return sum(pred == target for pred, target in zip(predictions, targets)) / len(targets)
+    if statuses is not None and len(statuses) != len(targets):
+        raise ValueError("statuses and targets must have the same length")
+    if eligible is not None and len(eligible) != len(targets):
+        raise ValueError("eligibility and targets must have the same length")
+    rows = []
+    for index, (prediction, target) in enumerate(zip(predictions, targets)):
+        if eligible is not None and not eligible[index]:
+            continue
+        if statuses is not None and QueryStatus(statuses[index]) is not QueryStatus.OK:
+            continue
+        rows.append(prediction == target)
+    if not rows:
+        return None
+    return sum(rows) / len(rows)
 
 
 def corruption_sensitivity(
     clean_predictions: Sequence[Any],
     corrupted_predictions: Sequence[Any],
     gold: Optional[Sequence[Any]] = None,
-) -> float:
+) -> Optional[float]:
     if len(clean_predictions) != len(corrupted_predictions):
         raise ValueError("clean and corrupted predictions must have the same length")
     if not clean_predictions:
-        return 0.0
+        return None
     if gold is None:
         return sum(a != b for a, b in zip(clean_predictions, corrupted_predictions)) / len(
             clean_predictions
         )
     clean_acc = ledger_query_accuracy(clean_predictions, gold)
     corrupted_acc = ledger_query_accuracy(corrupted_predictions, gold)
+    if clean_acc is None or corrupted_acc is None:
+        return None
     return clean_acc - corrupted_acc
 
 
-def state_acc_at_t(predicted: Sequence[Any], gold: Sequence[Any]) -> float:
+def state_acc_at_t(predicted: Sequence[Any], gold: Sequence[Any]) -> Optional[float]:
     return ledger_query_accuracy(predicted, gold)
 
 
 def transition_f1(
-    predicted: Iterable[Tuple[Any, ...]],
+    predicted: Optional[Iterable[Tuple[Any, ...]]],
     gold: Iterable[Tuple[Any, ...]],
-) -> float:
+) -> Optional[float]:
+    if predicted is None:
+        return None
     pred_set = set(predicted)
     gold_set = set(gold)
-    if not pred_set and not gold_set:
-        return 1.0
-    if not pred_set or not gold_set:
+    if not gold_set:
+        return None
+    if not pred_set:
         return 0.0
     tp = len(pred_set & gold_set)
     precision = tp / len(pred_set)
@@ -80,7 +103,10 @@ def transition_f1(
     return 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)
 
 
-def relation_change_f1(predicted: Iterable[Tuple[Any, ...]], gold: Iterable[Tuple[Any, ...]]) -> float:
+def relation_change_f1(
+    predicted: Optional[Iterable[Tuple[Any, ...]]],
+    gold: Iterable[Tuple[Any, ...]],
+) -> Optional[float]:
     return transition_f1(predicted, gold)
 
 

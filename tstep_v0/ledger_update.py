@@ -4,8 +4,15 @@ from __future__ import annotations
 
 from typing import Iterable, List
 
-from .ledger_schema import ConflictRecord, EventOperator, RecordKind, StateLedger, StateRecord
-from .validators import validate_operator_signature
+from .ledger_schema import (
+    ConflictRecord,
+    EventOperator,
+    RecordKind,
+    StateLedger,
+    StateRecord,
+    VerificationStatus,
+)
+from .validators import validate_operator_signature, validate_verified_operator_package
 
 
 class LedgerExecutionError(RuntimeError):
@@ -17,6 +24,7 @@ def apply_event_operator(
     event: EventOperator,
     *,
     strict: bool = False,
+    allow_unverified_toy: bool = False,
 ) -> StateLedger:
     """Apply one typed transition operator.
 
@@ -26,6 +34,13 @@ def apply_event_operator(
     """
 
     validate_operator_signature(event)
+    if event.verification_status is VerificationStatus.VERIFIED:
+        validate_verified_operator_package(ledger, event)
+    elif not allow_unverified_toy:
+        raise LedgerExecutionError(
+            f"{event.event_id}: production execution requires a VERIFIED operator; "
+            "set allow_unverified_toy=True only in synthetic smoke tests"
+        )
     conflicts = []
     for precondition in event.preconditions:
         current = ledger.get_state(precondition.entity_ref, precondition.state_key)
@@ -81,6 +96,7 @@ def apply_event_operators(
     *,
     sort_by_time: bool = True,
     strict: bool = False,
+    allow_unverified_toy: bool = False,
 ) -> StateLedger:
     ordered_events = list(events)
     if sort_by_time:
@@ -88,7 +104,12 @@ def apply_event_operators(
 
     updated = ledger
     for event in ordered_events:
-        updated = apply_event_operator(updated, event, strict=strict)
+        updated = apply_event_operator(
+            updated,
+            event,
+            strict=strict,
+            allow_unverified_toy=allow_unverified_toy,
+        )
     return updated
 
 

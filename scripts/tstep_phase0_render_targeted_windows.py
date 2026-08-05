@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Mapping
 
@@ -13,6 +15,17 @@ import numpy as np
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from tstep_v0.sampling import (
+    SAMPLER_VERSION,
+    inclusive_timestamps_ms,
+    nearest_frame_index,
+    pts_tolerance_ms,
+    validate_pts_observation,
+    video_last_pts_ms,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -55,16 +68,20 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def timestamps(start_s: float, end_s: float, step_s: float) -> List[float]:
-    if start_s < 0 or end_s < start_s or step_s <= 0:
-        raise ValueError(
-            f"invalid window start={start_s}, end={end_s}, step={step_s}"
-        )
-    count = int(np.floor((end_s - start_s) / step_s + 1e-9))
-    values = [round(start_s + index * step_s, 6) for index in range(count + 1)]
-    if not values or values[-1] < end_s - step_s * 0.25:
-        values.append(end_s)
-    return values
+def timestamps(
+    start_s: float,
+    end_s: float,
+    step_s: float,
+    *,
+    allow_single_frame: bool = False,
+) -> List[float]:
+    values_ms = inclusive_timestamps_ms(
+        round(start_s * 1000),
+        round(end_s * 1000),
+        round(step_s * 1000),
+        allow_single_frame=allow_single_frame,
+    )
+    return [value / 1000.0 for value in values_ms]
 
 
 def decode_at_times(
@@ -79,11 +96,13 @@ def decode_at_times(
     if fps <= 0 or frame_count <= 0:
         capture.release()
         raise RuntimeError(f"invalid video metadata: {video_path}")
-    duration_s = frame_count / fps
+    last_pts_ms = video_last_pts_ms(frame_count, fps)
+    duration_s = last_pts_ms / 1000.0
     decoded = []
-    for requested_s in requested_times:
-        clamped_s = min(max(0.0, requested_s), max(0.0, duration_s - 1 / fps))
-        frame_index = min(frame_count - 1, max(0, round(clamped_s * fps)))
+    previous_actual_pts_ms = None
+    for request_index, requested_s in enumerate(requested_times):
+        requested_ms = round(requested_s * 1000)
+        frame_index = nearest_frame_index(requested_ms, frame_count, fps)
         capture.set(cv2.CAP_PROP_POS_FRAMES, frame_index)
         ok, frame = capture.read()
         if not ok or frame is None or not frame.size:
@@ -92,11 +111,41 @@ def decode_at_times(
                 f"decode failed at t={requested_s:.3f}s frame={frame_index}: "
                 f"{video_path}"
             )
+        # Query POS_MSEC only after the sought frame is decoded.  Before read,
+        # some OpenCV/FFmpeg builds expose seconds despite the property name.
+        reported_pts_ms = float(capture.get(cv2.CAP_PROP_POS_MSEC))
+        derived_pts_ms = round(frame_index / fps * 1000)
+        if math.isfinite(reported_pts_ms) and reported_pts_ms >= 0:
+            actual_pts_ms = round(reported_pts_ms)
+            pts_source = "decoder_reported"
+        else:
+            actual_pts_ms = derived_pts_ms
+            pts_source = "fps_derived"
+        pts_delta_ms = validate_pts_observation(
+            actual_pts_ms,
+            derived_pts_ms,
+            previous_actual_pts_ms=previous_actual_pts_ms,
+            fps=fps,
+        )
+        previous_actual_pts_ms = actual_pts_ms
         decoded.append(
             {
                 "requested_s": requested_s,
-                "actual_s": frame_index / fps,
+                "requested_pts_ms": requested_ms,
+                "actual_s": actual_pts_ms / 1000.0,
+                "actual_pts_ms": actual_pts_ms,
+                "pts_source": pts_source,
+                "fps_derived_pts_ms": derived_pts_ms,
+                "pts_delta_ms": pts_delta_ms,
+                "pts_tolerance_ms": pts_tolerance_ms(fps),
                 "frame_index": frame_index,
+                "endpoint_role": (
+                    "start"
+                    if request_index == 0
+                    else "end"
+                    if request_index == len(requested_times) - 1
+                    else None
+                ),
                 "frame": frame,
             }
         )
@@ -175,6 +224,8 @@ def main() -> int:
     report_rows = []
     for row in document["rows"]:
         video_id = row["video_id"]
+        if not row.get("question_id"):
+            raise ValueError(f"targeted replay must be question-aware: {video_id} lacks question_id")
         if video_id in seen_video_ids:
             raise ValueError(f"duplicate video_id: {video_id}")
         seen_video_ids.add(video_id)
@@ -199,13 +250,24 @@ def main() -> int:
                     **window,
                     "video_duration_s": duration_s,
                     "decoded_frame_count": len(decoded),
+                    "frame_samples": [
+                        {key: value for key, value in item.items() if key != "frame"}
+                        for item in decoded
+                    ],
                     "page_paths": paths,
                 }
             )
-        report_rows.append({"video_id": video_id, "windows": window_reports})
+        report_rows.append(
+            {
+                "video_id": video_id,
+                "question_id": row["question_id"],
+                "windows": window_reports,
+            }
+        )
 
     report = {
-        "schema_version": "tstep-targeted-window-render-v0.1",
+        "schema_version": "tstep-targeted-window-render-v0.2",
+        "sampler_version": SAMPLER_VERSION,
         "gold_accessed": False,
         "video_count": len(report_rows),
         "window_count": sum(len(row["windows"]) for row in report_rows),

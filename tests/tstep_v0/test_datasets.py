@@ -4,8 +4,8 @@ import pytest
 
 from tstep_v0.datasets import (
     read_jsonl,
-    sample_to_ledger,
-    sample_to_query,
+    synthetic_toy_sample_to_ledger,
+    synthetic_toy_sample_to_query,
     validate_unified_sample,
 )
 from tstep_v0.query_executor import execute_query
@@ -21,7 +21,10 @@ def test_toy_samples_validate_and_execute_against_normalized_targets():
     assert len(samples) == 4
     for sample in samples:
         validate_unified_sample(sample)
-        result = execute_query(sample_to_ledger(sample), sample_to_query(sample))
+        result = execute_query(
+            synthetic_toy_sample_to_ledger(sample),
+            synthetic_toy_sample_to_query(sample),
+        )
         assert str(result.answer).lower() == str(
             sample["question"]["gt_answer_normalized"]
         ).lower()

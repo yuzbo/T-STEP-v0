@@ -15,7 +15,11 @@ from .ledger_schema import (
     StateRecord,
     VerificationStatus,
 )
-from .validators import ValidationError, validate_identity_scope, validate_time_spans
+from .validators import (
+    ValidationError,
+    validate_conversion_certificate,
+    validate_time_spans,
+)
 
 
 def state_interval_to_observed_record(interval: StateInterval) -> StateRecord:
@@ -74,17 +78,13 @@ def candidate_to_event_operator(
     candidate: StateChangeCandidate,
     certificate: ConversionCertificate,
 ) -> EventOperator:
-    checks = {
-        "same_persistent_object": certificate.same_persistent_object,
-        "same_state_key": certificate.same_state_key,
-        "explicit_before_after": certificate.explicit_before_after,
-        "explicit_operator_type": certificate.explicit_operator_type,
-        "participant_roles_verified": certificate.participant_roles_verified,
-        "commit_boundary_verified": certificate.commit_boundary_verified,
-    }
-    failed = [name for name, passed in checks.items() if not passed]
-    if failed:
-        raise ValidationError(f"incomplete conversion certificate: {failed}")
+    validate_conversion_certificate(certificate)
+    if certificate.candidate_id not in (None, candidate.candidate_id):
+        raise ValidationError("certificate candidate_id does not match StateChangeCandidate")
+    if certificate.linked_interval_ids and (
+        tuple(certificate.linked_interval_ids) != tuple(candidate.linked_interval_ids)
+    ):
+        raise ValidationError("certificate interval links do not match candidate")
     if certificate.participants.get("affected") != candidate.entity_ref:
         raise ValidationError("certificate affected participant does not match candidate")
 
@@ -118,6 +118,9 @@ def candidate_to_event_operator(
         source="certified_conversion",
         provenance=certificate.provenance,
         verification_status=VerificationStatus.VERIFIED,
+        evidence_refs=certificate.evidence_refs,
+        conversion_certificate_id=certificate.certificate_id,
+        identity_certificate_id=certificate.identity_certificate_id,
         metadata={
             "conversion_reviewer": certificate.reviewer,
             "linked_interval_ids": candidate.linked_interval_ids,

@@ -30,3 +30,11 @@ data/phase0/first_real_samples_unified.jsonl
 data/phase0/toc_phase0_candidates_30.jsonl
 data/phase0/toc_candidates_30_summary.json
 data/phase0/toc_candidate_video_ids.txt
+data/phase0/toc_phase0_r2_candidate_pool.jsonl
+data/phase0/toc_phase0_r2_roster.jsonl
+data/phase0/toc_phase0_r2_probed.jsonl
+data/phase0/toc_phase0_r2_dense.jsonl
+data/phase0/toc_phase0_r2_probe_report.json
+data/phase0/toc_phase0_r2_dense_render_report.json
+data/phase0/toc_phase0_r2_screening.csv
+data/phase0/toc_phase0_r2_targeted_render_report.json

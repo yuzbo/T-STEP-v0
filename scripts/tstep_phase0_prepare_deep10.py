@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
+import sys
 from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Sequence
@@ -14,6 +16,16 @@ import numpy as np
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from tstep_v0.sampling import (
+    SAMPLER_VERSION,
+    pts_tolerance_ms,
+    uniform_frame_indices,
+    validate_pts_observation,
+)
+
 SELECTION_QUOTAS = {
     "conditional_state": 2,
     "relative_spatial_change": 1,
@@ -209,7 +221,7 @@ def select_deep10(rows: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]:
 def sample_dense_frames(
     video_path: Path,
     frame_count: int,
-) -> List[tuple[int, float, np.ndarray]]:
+) -> List[tuple[int, int, int, str, np.ndarray]]:
     capture = cv2.VideoCapture(str(video_path))
     if not capture.isOpened():
         raise RuntimeError(f"cannot open video: {video_path}")
@@ -221,28 +233,35 @@ def sample_dense_frames(
 
     indices = uniform_frame_indices(total, frame_count)
     frames = []
+    previous_actual_pts_ms = None
     for frame_index in indices:
         capture.set(cv2.CAP_PROP_POS_FRAMES, int(frame_index))
         ok, frame = capture.read()
         if not ok or frame is None or not frame.size:
             capture.release()
             raise RuntimeError(f"decode failed at frame {frame_index}: {video_path}")
-        frames.append((int(frame_index), frame_index / fps, frame))
+        # POS_MSEC is only reliable after decoding the sought frame.  Reading
+        # it before capture.read() produced second-valued logs rounded as ms.
+        reported_pts_ms = float(capture.get(cv2.CAP_PROP_POS_MSEC))
+        derived_pts_ms = round(frame_index / fps * 1000)
+        if math.isfinite(reported_pts_ms) and reported_pts_ms >= 0:
+            actual_pts_ms = round(reported_pts_ms)
+            pts_source = "decoder_reported"
+        else:
+            actual_pts_ms = derived_pts_ms
+            pts_source = "fps_derived"
+        validate_pts_observation(
+            actual_pts_ms,
+            derived_pts_ms,
+            previous_actual_pts_ms=previous_actual_pts_ms,
+            fps=fps,
+        )
+        previous_actual_pts_ms = actual_pts_ms
+        frames.append(
+            (int(frame_index), derived_pts_ms, actual_pts_ms, pts_source, frame)
+        )
     capture.release()
     return frames
-
-
-def uniform_frame_indices(total: int, frame_count: int) -> List[int]:
-    """Return uniformly spaced indices including the first and last frame."""
-    if total <= 0:
-        raise ValueError("total frame count must be positive")
-    if frame_count <= 0 or frame_count > total:
-        raise ValueError("sample frame count must be in [1, total]")
-    if frame_count == 1:
-        return [0]
-    # Boundary events are disproportionately likely to occur at video
-    # start/end, so interior-only uniform sampling is unsafe.
-    return [int(index) for index in np.linspace(0, total - 1, num=frame_count)]
 
 
 def render_dense_sheets(
@@ -256,16 +275,36 @@ def render_dense_sheets(
     local_path = Path(row["video"]["local_path"])
     frames = sample_dense_frames(local_path, frame_count)
     video_id = row["video"]["video_id"]
+    row["video"]["dense_sampling"] = {
+        "sampler_version": SAMPLER_VERSION,
+        "stage": "endpoint_inclusive_dense_24",
+        "requested_frame_count": frame_count,
+        "endpoint_inclusive": True,
+        "samples": [
+            {
+                "frame_index": frame_index,
+                "requested_pts_ms": requested_pts_ms,
+                "actual_pts_ms": actual_pts_ms,
+                "pts_source": pts_source,
+                "pts_delta_ms": actual_pts_ms - requested_pts_ms,
+                "pts_tolerance_ms": pts_tolerance_ms(float(row["video"]["fps"])),
+                "endpoint_role": (
+                    "start" if index == 0 else "end" if index == len(frames) - 1 else None
+                ),
+            }
+            for index, (frame_index, requested_pts_ms, actual_pts_ms, pts_source, _) in enumerate(frames)
+        ],
+    }
     output_paths = []
     for page_index, start in enumerate(range(0, len(frames), frames_per_sheet), 1):
         page_frames = frames[start : start + frames_per_sheet]
         tiles = []
-        for frame_index, timestamp_s, frame in page_frames:
+        for frame_index, _, actual_pts_ms, _, frame in page_frames:
             resized = cv2.resize(frame, (320, 180), interpolation=cv2.INTER_AREA)
             label = np.full((24, 320, 3), 245, dtype=np.uint8)
             cv2.putText(
                 label,
-                f"frame={frame_index}  t={timestamp_s:.2f}s",
+                f"frame={frame_index}  pts={actual_pts_ms}ms",
                 (8, 17),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.48,
@@ -345,6 +384,7 @@ def main() -> int:
     write_jsonl(args.deep10_output, selected)
     report = {
         "schema_version": "tstep-toc-deep10-selection-v0.1",
+        "sampler_version": SAMPLER_VERSION,
         "gold_accessed": False,
         "coarse_screen_count": len(screened),
         "coarse_status_counts": dict(

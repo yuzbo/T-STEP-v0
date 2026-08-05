@@ -1,13 +1,19 @@
 """T-STEP-v0 ledger-core harness."""
 
 from .ledger_schema import (
+    CompetingInstance,
     ConflictRecord,
     ConversionCertificate,
+    CorrectionDirection,
+    CorrectionRecord,
     CorruptionSpec,
     EntityRef,
     EventOperator,
+    EventPresuppositionStatus,
     EvidenceSpan,
     IdentityAnchor,
+    IdentityCertificate,
+    IdentityEvidenceBasis,
     IdentityScope,
     LedgerQuery,
     MetricApplicability,
@@ -26,18 +32,29 @@ from .ledger_schema import (
     TransitionBoundary,
     Uncertainty,
     VerificationStatus,
+    VisibilityObservation,
+    VisibilityState,
+    TerminalPredicate,
 )
 from .ledger_update import LedgerExecutionError, apply_event_operator, apply_event_operators
 from .query_executor import QueryResult, execute_query
+from .corruptions import CorruptionResult, apply_corruption
 
 __all__ = [
+    "CompetingInstance",
     "ConflictRecord",
     "ConversionCertificate",
+    "CorrectionDirection",
+    "CorrectionRecord",
     "CorruptionSpec",
+    "CorruptionResult",
     "EntityRef",
     "EventOperator",
+    "EventPresuppositionStatus",
     "EvidenceSpan",
     "IdentityAnchor",
+    "IdentityCertificate",
+    "IdentityEvidenceBasis",
     "IdentityScope",
     "LedgerExecutionError",
     "LedgerQuery",
@@ -58,7 +75,11 @@ __all__ = [
     "TransitionBoundary",
     "Uncertainty",
     "VerificationStatus",
+    "VisibilityObservation",
+    "VisibilityState",
+    "TerminalPredicate",
     "apply_event_operator",
     "apply_event_operators",
+    "apply_corruption",
     "execute_query",
 ]

@@ -6,6 +6,8 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
+import sys
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Tuple
 
@@ -14,6 +16,16 @@ import numpy as np
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from tstep_v0.sampling import (
+    SAMPLER_VERSION,
+    pts_tolerance_ms,
+    validate_pts_observation,
+    video_last_pts_ms,
+)
+
 FRAME_RATIOS = (0.05, 0.25, 0.5, 0.75, 0.95)
 
 
@@ -92,6 +104,7 @@ def main() -> int:
     write_screening_csv(args.screening_csv, probed)
     report = {
         "schema_version": "tstep-toc-video-probe-v0.1",
+        "sampler_version": SAMPLER_VERSION,
         "candidate_count": len(probe_rows),
         "decoded_count": sum(row["decode_status"] == "ok" for row in probe_rows),
         "failed_count": sum(row["decode_status"] != "ok" for row in probe_rows),
@@ -151,18 +164,49 @@ def probe_video(path: Path) -> Tuple[Dict[str, Any], List[np.ndarray]]:
     fps = float(capture.get(cv2.CAP_PROP_FPS))
     frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
     duration_ms = (
-        round(frame_count / fps * 1000)
+        video_last_pts_ms(frame_count, fps)
         if fps > 0 and frame_count > 0
         else None
     )
     frames = []
+    frame_samples = []
+    previous_actual_pts_ms = None
     if frame_count > 0:
         for ratio in FRAME_RATIOS:
             frame_index = min(frame_count - 1, max(0, round((frame_count - 1) * ratio)))
             capture.set(cv2.CAP_PROP_POS_FRAMES, frame_index)
             ok, frame = capture.read()
             if ok and frame is not None and frame.size:
+                # OpenCV/FFmpeg reports seconds immediately after a seek on
+                # some files, but milliseconds after the requested frame has
+                # actually been decoded.  Read first, then query POS_MSEC.
+                reported_pts_ms = float(capture.get(cv2.CAP_PROP_POS_MSEC))
                 frames.append(frame)
+                derived_pts_ms = round(frame_index / fps * 1000)
+                if math.isfinite(reported_pts_ms) and reported_pts_ms >= 0:
+                    actual_pts_ms = round(reported_pts_ms)
+                    pts_source = "decoder_reported"
+                else:
+                    actual_pts_ms = derived_pts_ms
+                    pts_source = "fps_derived"
+                pts_delta_ms = validate_pts_observation(
+                    actual_pts_ms,
+                    derived_pts_ms,
+                    previous_actual_pts_ms=previous_actual_pts_ms,
+                    fps=fps,
+                )
+                previous_actual_pts_ms = actual_pts_ms
+                frame_samples.append(
+                    {
+                        "ratio": ratio,
+                        "frame_index": frame_index,
+                        "actual_pts_ms": actual_pts_ms,
+                        "pts_source": pts_source,
+                        "fps_derived_pts_ms": derived_pts_ms,
+                        "pts_delta_ms": pts_delta_ms,
+                        "pts_tolerance_ms": pts_tolerance_ms(fps),
+                    }
+                )
     capture.release()
     return (
         {
@@ -172,6 +216,9 @@ def probe_video(path: Path) -> Tuple[Dict[str, Any], List[np.ndarray]]:
             "frame_count": frame_count if frame_count > 0 else None,
             "duration_ms": duration_ms,
             "sampled_frame_count": len(frames),
+            "sampler_version": SAMPLER_VERSION,
+            "sampling_stage": "coarse_5_frame",
+            "frame_samples": frame_samples,
         },
         frames,
     )

@@ -1,22 +1,25 @@
 {
-  "schema_version": "tstep-targeted-window-spec-v0.1",
+  "schema_version": "tstep-targeted-window-spec-v0.2",
   "gold_accessed": false,
   "purpose": "Resolve boundary blockers from dense review round 1 without consulting answers.",
   "rows": [
     {
       "video_id": "charades_X95FK",
+      "question_id": "932fc9216a1a",
       "windows": [
         {"label": "final_visibility_boundary", "start_s": 25.5, "end_s": 27.95, "step_s": 0.1}
       ]
     },
     {
       "video_id": "charades_JFU3J",
+      "question_id": "e1113ed4bdfd",
       "windows": [
         {"label": "full_visibility_sweep", "start_s": 0.0, "end_s": 33.4, "step_s": 0.4}
       ]
     },
     {
       "video_id": "charades_GH3D1",
+      "question_id": "26eb74bfda76",
       "windows": [
         {"label": "occlusion_boundary", "start_s": 5.0, "end_s": 11.5, "step_s": 0.25},
         {"label": "return_boundary", "start_s": 18.5, "end_s": 21.5, "step_s": 0.15}
@@ -24,6 +27,7 @@
     },
     {
       "video_id": "charades_SX07Q",
+      "question_id": "a77b0193c8c5",
       "windows": [
         {"label": "partial_visibility_boundary", "start_s": 23.0, "end_s": 36.0, "step_s": 0.5},
         {"label": "final_visibility_boundary", "start_s": 42.0, "end_s": 48.2, "step_s": 0.25}
@@ -31,6 +35,7 @@
     },
     {
       "video_id": "charades_K7PVL",
+      "question_id": "a2a4df623fbf",
       "windows": [
         {"label": "opening_boundary", "start_s": 0.0, "end_s": 2.0, "step_s": 0.1},
         {"label": "bowl_visibility_boundary", "start_s": 19.0, "end_s": 24.0, "step_s": 0.2}
@@ -38,6 +43,7 @@
     },
     {
       "video_id": "charades_6G96Q",
+      "question_id": "0eeb7a9a4848",
       "windows": [
         {"label": "cross_object_occlusion_boundary", "start_s": 18.0, "end_s": 34.0, "step_s": 0.25}
       ]

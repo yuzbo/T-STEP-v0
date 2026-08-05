@@ -11,6 +11,7 @@ def _toy_ledger():
             EventOperator("e1", 1.0, 2.0, "location", "cup", "location", "table", "shelf"),
             EventOperator("e2", 3.0, 4.0, "location", "cup", "location", "shelf", "sink"),
         ],
+        allow_unverified_toy=True,
     )
 
 

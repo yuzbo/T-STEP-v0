@@ -7,6 +7,12 @@ from pathlib import Path
 from tstep_v0.datasets import read_jsonl
 from tstep_v0.validators import validate_no_answer_access
 from scripts.tstep_phase0_select_toc_candidates import candidate_row
+from scripts.tstep_phase0_preseal_r2 import (
+    R2_QUOTAS,
+    canonical_rows_sha256,
+    eligible_blind_pool,
+    select_r2_roster,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -83,3 +89,38 @@ def test_toc_candidate_selection_is_stratified_and_answer_blind(tmp_path):
     assert len(list(read_jsonl(gold))) == 30
     assert len(video_ids.read_text(encoding="utf-8").splitlines()) == 30
     assert json.loads(summary.read_text(encoding="utf-8"))["selected_count"] == 30
+
+
+def test_r2_preseal_is_all_new_quota_exact_and_deterministic():
+    items = []
+    for dim, quota in R2_QUOTAS.items():
+        for index in range(quota + 1):
+            items.append(
+                {
+                    "qa_id": f"{dim}-{index}",
+                    "video_id": f"{dim}-video-{index}",
+                    "question": f"Question for {dim} {index}?",
+                    "format": "sp",
+                    "allowed_answers": ["A", "B"],
+                    "correct_answer": "A",
+                    "events": [{"answer_derived": True}],
+                    "metadata": {
+                        "dim": dim,
+                        "tier": "tier1",
+                        "subject_label": "object",
+                        "has_hallucination_distractor": False,
+                    },
+                }
+            )
+    excluded = {"event_ordering-video-0"}
+    pool = eligible_blind_pool(items, excluded_video_ids=excluded)
+    first = select_r2_roster(pool, seed=17)
+    second = select_r2_roster(pool, seed=17)
+
+    assert first == second
+    assert len(first) == 10
+    assert len({row["video"]["video_id"] for row in first}) == 10
+    assert not ({row["video"]["video_id"] for row in first} & excluded)
+    assert Counter(row["source_metadata"]["dim"] for row in first) == R2_QUOTAS
+    assert all("events" not in row["question"] for row in first)
+    assert canonical_rows_sha256(first) == canonical_rows_sha256(second)

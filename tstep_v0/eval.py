@@ -6,8 +6,12 @@ import re
 import string
 from typing import Any, Dict, Iterable, Mapping, Optional, Sequence, Tuple
 
-from .datasets import sample_to_ledger, sample_to_query, validate_unified_sample
-from .ledger_schema import LedgerQuery, StateLedger
+from .datasets import (
+    synthetic_toy_sample_to_ledger,
+    synthetic_toy_sample_to_query,
+    validate_unified_sample,
+)
+from .ledger_schema import LedgerQuery, QueryStatus, StateLedger
 from .metrics import (
     corruption_sensitivity,
     event_recall_at_budget,
@@ -29,17 +33,22 @@ def evaluate_ledger_queries(
 ) -> Dict[str, Any]:
     examples = list(queries)
     gold = [target for _, target in examples]
-    predictions = [execute_query(ledger, query).answer for query, _ in examples]
+    results = [execute_query(ledger, query) for query, _ in examples]
+    predictions = [result.answer for result in results]
+    statuses = [result.status for result in results]
     report: Dict[str, Any] = {
         "num_queries": len(examples),
         "predictions": predictions,
         "targets": gold,
-        "ledger_query_accuracy": ledger_query_accuracy(predictions, gold),
+        "statuses": [status.value for status in statuses],
+        "eligible_query_count": sum(status is QueryStatus.OK for status in statuses),
+        "unknown_query_count": sum(status is QueryStatus.UNKNOWN for status in statuses),
+        "inapplicable_query_count": sum(status is QueryStatus.INAPPLICABLE for status in statuses),
+        "ledger_query_accuracy": ledger_query_accuracy(predictions, gold, statuses=statuses),
     }
     if corrupted_ledger is not None:
-        corrupted_predictions = [
-            execute_query(corrupted_ledger, query).answer for query, _ in examples
-        ]
+        corrupted_results = [execute_query(corrupted_ledger, query) for query, _ in examples]
+        corrupted_predictions = [result.answer for result in corrupted_results]
         report["corrupted_predictions"] = corrupted_predictions
         report["corruption_sensitivity"] = corruption_sensitivity(
             predictions,
@@ -77,19 +86,20 @@ def evaluate_samples(
     schema/executor/metric smoke test, not a learned baseline.
     """
 
-    if corruption_mode not in (None, "drop_last"):
-        raise ValueError(f"unsupported corruption_mode: {corruption_mode!r}")
+    if corruption_mode is not None:
+        raise ValueError(
+            "blind drop_last corruption was removed in v0.2; use a validated CorruptionSpec"
+        )
 
     rows = []
     predictions = []
     targets = []
     correctness = []
     confidences = []
-    corrupted_correctness = []
     for sample in samples:
         validate_unified_sample(sample)
-        ledger = sample_to_ledger(sample)
-        query = sample_to_query(sample)
+        ledger = synthetic_toy_sample_to_ledger(sample)
+        query = synthetic_toy_sample_to_query(sample)
         result = execute_query(ledger, query)
         target = sample["question"]["gt_answer_normalized"]
         normalized_prediction = normalize_answer(result.answer)
@@ -100,15 +110,6 @@ def evaluate_samples(
         corruption_answer = None
         corruption_correct = None
         corruption_drop = None
-        if corruption_mode == "drop_last":
-            corrupted_events = list(sample["events"][:-1])
-            corrupted_ledger = sample_to_ledger(sample, events=corrupted_events)
-            corruption_result = execute_query(corrupted_ledger, query)
-            corruption_answer = corruption_result.answer
-            corruption_correct = normalize_answer(corruption_answer) == normalized_target
-            corruption_drop = float(is_correct) - float(corruption_correct)
-            corrupted_correctness.append(corruption_correct)
-
         event_recall = _sample_event_recall(sample)
         sample_transition_f1 = _sample_transition_f1(sample)
         rows.append(
@@ -136,23 +137,13 @@ def evaluate_samples(
 
     report: Dict[str, Any] = {
         "run_id": run_id,
-        "run_kind": "annotated_ledger_smoke",
+        "run_kind": "synthetic_toy_annotated_ledger_smoke",
+        "production_claim_eligible": False,
         "num_samples": len(samples),
         "results": rows,
         "ledger_query_accuracy": ledger_query_accuracy(predictions, targets),
         "risk_coverage_auc": risk_coverage_auc(confidences, correctness),
     }
-    if corruption_mode is not None:
-        report["corruption_mode"] = corruption_mode
-        report["corruption_sensitivity"] = (
-            sum(
-                float(clean) - float(corrupted)
-                for clean, corrupted in zip(correctness, corrupted_correctness)
-            )
-            / len(correctness)
-            if correctness
-            else 0.0
-        )
     return report
 
 
@@ -169,7 +160,7 @@ def _sample_event_recall(sample: Mapping[str, Any]) -> Optional[float]:
     return event_recall_at_budget(selected_spans, gold, iou_threshold=0.3)
 
 
-def _sample_transition_f1(sample: Mapping[str, Any]) -> float:
+def _sample_transition_f1(sample: Mapping[str, Any]) -> Optional[float]:
     gold = [
         (
             event["operator"]["target_object"],
@@ -179,8 +170,9 @@ def _sample_transition_f1(sample: Mapping[str, Any]) -> float:
         )
         for event in sample["events"]
     ]
-    predicted = sample.get("audit", {}).get("smoke_predicted_transitions", gold)
-    return transition_f1((tuple(row) for row in predicted), (tuple(row) for row in gold))
+    predicted = sample.get("audit", {}).get("smoke_predicted_transitions")
+    predicted_rows = None if predicted is None else (tuple(row) for row in predicted)
+    return transition_f1(predicted_rows, (tuple(row) for row in gold))
 
 
 def _result_row(
@@ -194,7 +186,7 @@ def _result_row(
     confidence: float,
     ledger: StateLedger,
     event_recall: Optional[float],
-    transition_score: float,
+    transition_score: Optional[float],
     corruption_mode: Optional[str],
     corruption_answer: Any,
     corruption_correct: Optional[bool],
@@ -241,6 +233,7 @@ def _result_row(
         "ledger_outputs": {
             "ledger_available": True,
             "transition_count": len(ledger.events),
+            "rejected_transition_count": len(ledger.rejected_events),
             "state_entry_count": len(ledger.records),
             "conflict_count": len(ledger.conflicts),
             "executor_answer": answer,

@@ -1,0 +1,49 @@
+{
+  "schema_version": "tstep-toc-r2-preseal-amendment-v0.2",
+  "amendment_id": "R2_PRESEAL_AMENDMENT_001",
+  "created_at": "2026-08-06T12:00:00+08:00",
+  "decision": "PROMPT_COMPLETENESS_FIX_ONLY",
+  "selection_changed": false,
+  "sample_ids_or_order_changed": false,
+  "replacement_allowed": false,
+  "gold_fields_accessed_or_propagated": false,
+  "original_preseal": "data/phase0/toc_phase0_r2_preseal.json",
+  "original_roster_sha256": "c4d40d3e7a5cf1027ecedbc2165c680bf4af677601a64f971be874c381041fbf",
+  "effective_roster_sha256": "e1bb008745aae4ccf30b57402764abfaf464a63a74971ce0e0e0872e8a18adfb",
+  "changed_rows": [
+    {
+      "sample_id": "TOC-Bench:phase0:charades_R5WMI:32933837ab5e",
+      "added_field": "question.query_event_descriptions",
+      "event_count": 3
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:charades_Y50QF:1d9dc2a81f99",
+      "added_field": "question.query_event_descriptions",
+      "event_count": 4
+    },
+    {
+      "sample_id": "TOC-Bench:phase0:perception_test_video_422:2c04c91f35a0",
+      "added_field": "question.query_event_descriptions",
+      "event_count": 3
+    }
+  ],
+  "allowed_projection": [
+    "events[].label",
+    "events[].event_text"
+  ],
+  "forbidden_projection": [
+    "correct_order",
+    "chronological_index",
+    "event_id",
+    "event_type",
+    "correct_answer"
+  ],
+  "upstream_provenance": {
+    "repository": "https://github.com/cjzcjz666/toc_bench",
+    "commit": "e4a10bc1fd31ec1af9482bcfc827e41f2fac769a",
+    "construction": "https://github.com/cjzcjz666/toc_bench/blob/e4a10bc1fd31ec1af9482bcfc827e41f2fac769a/scripts/step3b_build_skeletons.py#L509-L545",
+    "release_projection": "https://github.com/cjzcjz666/toc_bench/blob/e4a10bc1fd31ec1af9482bcfc827e41f2fac769a/scripts/step5a_export_for_humans.py#L65-L80",
+    "evaluation_prompt": "https://github.com/cjzcjz666/toc_bench/blob/e4a10bc1fd31ec1af9482bcfc827e41f2fac769a/eval_runner.py#L562-L570",
+    "interpretation": "events[].label and events[].event_text are shuffled prompt options; correct_order is the separately stored evaluator answer"
+  }
+}
